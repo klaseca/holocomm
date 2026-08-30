@@ -1,0 +1,12 @@
+{
+  "bgColor": {
+    "inset": { "$value": "{base.color.neutral.2}", "$type": "color" },
+    "disabled": { "$value": "{base.color.neutral.2}", "$type": "color" }
+  },
+  "control": {
+    "bgColor": {
+      "rest": { "$value": "{base.color.neutral.2}", "$type": "color" },
+      "hover": { "$value": "{base.color.neutral.3}", "$type": "color" }
+    }
+  }
+}

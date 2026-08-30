@@ -1,0 +1,23 @@
+{
+  "stroke": {
+    "$type": "dimension",
+    "default": { "$value": { "value": 1, "unit": "px" } },
+    "focus": { "$value": { "value": 2, "unit": "px" } },
+    "focus-offset": { "$value": { "value": 2, "unit": "px" } }
+  },
+  "layout": {
+    "$type": "dimension",
+    "app-navigation": { "$value": { "value": 72, "unit": "px" } },
+    "content-max": { "$value": { "value": 1152, "unit": "px" } },
+    "dialog-max": { "$value": { "value": 440, "unit": "px" } },
+    "dialog-wide-max": { "$value": { "value": 720, "unit": "px" } },
+    "scrollbar": { "$value": { "value": 10, "unit": "px" } },
+    "viewport-min": { "$value": { "value": 320, "unit": "px" } }
+  },
+  "layer": {
+    "$type": "number",
+    "overlay": { "$value": 80 },
+    "modal": { "$value": 100 },
+    "tooltip": { "$value": 300 }
+  }
+}

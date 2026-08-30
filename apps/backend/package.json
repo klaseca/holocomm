@@ -1,0 +1,29 @@
+{
+  "name": "@holocomm/backend",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --watch src/infra/node/bootstrap.ts",
+    "start": "node --env-file-if-exists=.env src/infra/node/bootstrap.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@holocomm/protocol": "workspace:*",
+    "@hono/node-server": "^2.1.1",
+    "hono": "^4.13.3",
+    "pino": "^10.3.1",
+    "typebox": "catalog:",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/ws": "^8.18.1",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

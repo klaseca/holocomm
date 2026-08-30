@@ -1,0 +1,65 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "name": "Holocomm on GitHub Primer",
+  "version": "2025.10",
+  "resolutionOrder": [
+    { "$ref": "#/sets/base" },
+    { "$ref": "#/sets/functional" },
+    { "$ref": "#/sets/holocomm" },
+    { "$ref": "#/modifiers/theme" },
+    { "$ref": "#/modifiers/size" }
+  ],
+  "sets": {
+    "base": {
+      "sources": [
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/color/light/light.tokens.json" }
+      ]
+    },
+    "functional": {
+      "sources": [
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/bgColor.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/borderColor.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/control.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/fgColor.tokens.json" }
+      ]
+    },
+    "holocomm": {
+      "sources": [
+        { "$ref": "./tokens/color.json" },
+        { "$ref": "./tokens/spacing.json" },
+        { "$ref": "./tokens/typography.json" },
+        { "$ref": "./tokens/radius.json" },
+        { "$ref": "./tokens/motion.json" },
+        { "$ref": "./tokens/layout.json" }
+      ]
+    }
+  },
+  "modifiers": {
+    "theme": {
+      "contexts": {
+        "light": [
+          { "$ref": "./node_modules/dtcg-examples/github-primer/base/color/light/light.tokens.json" },
+          { "$ref": "./tokens/primer-light.json" }
+        ],
+        "dark-dimmed": [
+          { "$ref": "./node_modules/dtcg-examples/github-primer/base/color/dark/dark.tokens.json" },
+          { "$ref": "./node_modules/dtcg-examples/github-primer/base/color/dark/dark.dimmed.tokens.json" },
+          { "$ref": "./tokens/primer-dark-dimmed.json" }
+        ]
+      },
+      "default": "dark-dimmed"
+    },
+    "size": {
+      "contexts": {
+        "default": [],
+        "coarse": [
+          { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/size-coarse.tokens.json" }
+        ],
+        "fine": [
+          { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/size-fine.tokens.json" }
+        ]
+      },
+      "default": "default"
+    }
+  }
+}

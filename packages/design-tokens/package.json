@@ -1,0 +1,23 @@
+{
+  "name": "@holocomm/design-tokens",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./tokens.css": "./generated/tokens.css"
+  },
+  "scripts": {
+    "dev": "terrazzo build --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "terrazzo build"
+  },
+  "devDependencies": {
+    "@terrazzo/cli": "^2.7.1",
+    "@terrazzo/plugin-css": "^2.7.1",
+    "@types/node": "catalog:",
+    "dtcg-examples": "^1.1.3",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

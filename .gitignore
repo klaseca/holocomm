@@ -1,0 +1,7 @@
+node_modules
+dist
+references
+plans
+.env
+.env.*
+!.env.example

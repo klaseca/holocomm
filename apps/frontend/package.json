@@ -1,0 +1,31 @@
+{
+  "name": "@holocomm/frontend",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest run --config vite.config.ts",
+    "typecheck": "vue-tsc -b",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@holocomm/design-tokens": "workspace:*",
+    "@holocomm/protocol": "workspace:*",
+    "reka-ui": "^2.10.3",
+    "typebox": "catalog:",
+    "vue": "^3.5.40",
+    "vue-context-ts": "1.0.0",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/tsconfig": "^0.9.1",
+    "typescript": "catalog:",
+    "vite": "^8.2.0",
+    "vitest": "catalog:",
+    "vue-tsc": "^3.3.8"
+  }
+}

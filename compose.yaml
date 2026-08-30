@@ -1,0 +1,30 @@
+services:
+  holocomm:
+    build:
+      context: .
+    image: holocomm
+    environment:
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:?Set ALLOWED_ORIGIN to the public http:// or https:// origin}
+      EMPTY_ROOM_TTL_MS: ${EMPTY_ROOM_TTL_MS:-60000}
+      HEARTBEAT_INTERVAL_MS: ${HEARTBEAT_INTERVAL_MS:-30000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      MAX_CHAT_MESSAGE_LENGTH: ${MAX_CHAT_MESSAGE_LENGTH:-2000}
+      MAX_PARTICIPANTS: ${MAX_PARTICIPANTS:-4}
+      MAX_WEBSOCKET_CONNECTIONS: ${MAX_WEBSOCKET_CONNECTIONS:-1000}
+      MAX_WEBSOCKET_PAYLOAD_BYTES: ${MAX_WEBSOCKET_PAYLOAD_BYTES:-16384}
+      RTC_ICE_SERVERS: ${RTC_ICE_SERVERS:-stun:stun.l.google.com:19302}
+      SHUTDOWN_TIMEOUT_MS: ${SHUTDOWN_TIMEOUT_MS:-8000}
+      WEBSOCKET_RATE_LIMIT_PER_SECOND: ${WEBSOCKET_RATE_LIMIT_PER_SECOND:-120}
+      WEBSOCKET_URL: ${WEBSOCKET_URL:?Set WEBSOCKET_URL to the public ws:// or wss:// endpoint}
+    init: true
+    ports:
+      - '${PUBLISHED_ADDRESS:-0.0.0.0}:${PUBLISHED_PORT:-3000}:3000'
+    read_only: true
+    restart: unless-stopped
+    stop_grace_period: 15s
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL

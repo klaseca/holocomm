@@ -1,0 +1,31 @@
+{
+  "name": "holocomm",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Voice rooms without accounts or saved history",
+  "scripts": {
+    "dev": "aubr --parallel -F @holocomm/backend -F @holocomm/frontend dev",
+    "dev:tokens": "aubr -F @holocomm/design-tokens dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "aubr -r --if-present typecheck",
+    "test": "aubr -r --if-present test",
+    "build": "aubr -r --if-present build"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "9.3.0",
+    "eslint": "^10.9.0",
+    "typescript": "catalog:"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=24.18.0"
+    },
+    "packageManager": {
+      "name": "aube",
+      "version": ">=2.2.0"
+    }
+  }
+}

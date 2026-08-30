@@ -1,0 +1,34 @@
+:root {
+  font-family: var(--font-sans);
+  line-height: var(--line-height-body);
+  color: var(--color-content-primary);
+  background: var(--color-surface-canvas);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: var(--layout-viewport-min);
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
