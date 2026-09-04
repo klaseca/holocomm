@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 
-import ChatPanel from '#/modules/chat/ui/chat-panel.vue'
-import MediaSettingsDialog from '#/modules/rtc/ui/media-settings-dialog.vue'
-import RemoteScreen from '#/modules/rtc/ui/remote-screen.vue'
+import { ChatPanel } from '#/modules/chat/ui/chat-panel.vue'
+import { MediaSettingsDialog } from '#/modules/rtc/ui/media-settings-dialog.vue'
+import { RemoteScreen } from '#/modules/rtc/ui/remote-screen.vue'
 import { useVoiceActivity } from '#/modules/rtc/ui/use-voice-activity.ts'
-import VoiceControls from '#/modules/rtc/ui/voice-controls.vue'
+import { VoiceControls } from '#/modules/rtc/ui/voice-controls.vue'
 import { Button } from '#/ui/primitives'
 
 import { type RoomPreviewState, useRoomPreview } from '../application/use-room-preview.ts'
 import { type ConnectionState, roomSessionContext } from '../application/use-room-session.ts'
-import ParticipantsPanel from './participants-panel.vue'
+import { ParticipantsPanel } from './participants-panel.vue'
 
 const props = defineProps<{
   initialDisplayName: string

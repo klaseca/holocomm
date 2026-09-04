@@ -3,7 +3,7 @@ import { onBeforeUnmount } from 'vue'
 
 import { themeStateContext } from '../modules/preferences/application/theme-state.ts'
 import { roomSessionContext } from '../modules/room/application/use-room-session.ts'
-import RemoteAudio from '../modules/rtc/ui/remote-audio.vue'
+import { RemoteAudio } from '../modules/rtc/ui/remote-audio.vue'
 
 const session = roomSessionContext.inject()
 

@@ -11,7 +11,7 @@ import {
 } from 'reka-ui'
 import { useSlots } from 'vue'
 
-import IconButton from './icon-button.vue'
+import { IconButton } from './icon-button.vue'
 
 withDefaults(
   defineProps<{

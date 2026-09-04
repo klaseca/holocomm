@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory, type Router } from 'vue-router'
 
 import type { LocalUserState } from '../modules/identity/application/local-user-state.ts'
-import HomePage from './pages/home-page.vue'
-import OnboardingPage from './pages/onboarding-page.vue'
-import RoomPage from './pages/room-page.vue'
+import { HomePage } from './pages/home-page.vue'
+import { OnboardingPage } from './pages/onboarding-page.vue'
+import { RoomPage } from './pages/room-page.vue'
 
 export function createAppRouter(userState: LocalUserState): Router {
   return createRouter({

@@ -117,6 +117,16 @@ export default antfu(
     },
   },
   {
+    files: [
+      'apps/frontend/src/app/router.ts',
+      'apps/frontend/src/main.ts',
+    ],
+    rules: {
+      'ts/no-unsafe-assignment': 'off',
+      'ts/no-unsafe-argument': 'off',
+    },
+  },
+  {
     files: ['**/*.{test,spec}.ts'],
     rules: {
       'vitest/consistent-test-it': ['error', {

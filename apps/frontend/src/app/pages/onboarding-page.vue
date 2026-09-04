@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router'
 
 import { localUserStateContext } from '#/modules/identity/application/local-user-state.ts'
-import OnboardingView from '#/modules/identity/ui/onboarding-view.vue'
+import { OnboardingView } from '#/modules/identity/ui/onboarding-view.vue'
 
 const route = useRoute()
 

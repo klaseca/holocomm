@@ -2,9 +2,9 @@
 import { useRouter } from 'vue-router'
 
 import { localUserStateContext } from '#/modules/identity/application/local-user-state.ts'
-import AppNavigation from '#/modules/identity/ui/app-navigation.vue'
+import { AppNavigation } from '#/modules/identity/ui/app-navigation.vue'
 import { roomSessionContext } from '#/modules/room/application/use-room-session.ts'
-import RoomView from '#/modules/room/ui/room-view.vue'
+import { RoomView } from '#/modules/room/ui/room-view.vue'
 
 const props = defineProps<{ slug: string }>()
 

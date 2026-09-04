@@ -15,5 +15,11 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true
   },
+  "vueCompilerOptions": {
+    "plugins": ["unplugin-vue-named-export/volar"],
+    "namedExport": {
+      "removeDefault": true
+    }
+  },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

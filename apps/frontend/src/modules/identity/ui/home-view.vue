@@ -10,7 +10,7 @@ import {
   normalizeRoomSlug,
   validateRoomSlug,
 } from '../domain/guest-profile.ts'
-import AppNavigation from './app-navigation.vue'
+import { AppNavigation } from './app-navigation.vue'
 
 defineProps<{
   connectedRoom?: string

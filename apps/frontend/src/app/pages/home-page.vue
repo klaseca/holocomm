@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 
 import { localUserStateContext } from '#/modules/identity/application/local-user-state.ts'
-import HomeView from '#/modules/identity/ui/home-view.vue'
+import { HomeView } from '#/modules/identity/ui/home-view.vue'
 import { roomSessionContext } from '#/modules/room/application/use-room-session.ts'
 
 const router = useRouter()
