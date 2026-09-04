@@ -48,14 +48,10 @@ async function bootstrap(): Promise<void> {
   )
 
   createApp(App)
-    // @ts-expect-error tmp
-    .provide(localUserStateContext.key, userState)
-    // @ts-expect-error tmp
-    .provide(localMediaSettingsContext.key, mediaSettings)
-    // @ts-expect-error tmp
-    .provide(roomSessionContext.key, roomSession)
-    // @ts-expect-error tmp
-    .provide(themeStateContext.key, themeState)
+    .use(localUserStateContext, userState)
+    .use(localMediaSettingsContext, mediaSettings)
+    .use(roomSessionContext, roomSession)
+    .use(themeStateContext, themeState)
     .use(router)
     .mount('#app')
 }

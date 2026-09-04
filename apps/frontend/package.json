@@ -16,7 +16,7 @@
     "reka-ui": "^2.10.3",
     "typebox": "catalog:",
     "vue": "^3.5.40",
-    "vue-context-ts": "1.0.0",
+    "vue-context-ts": "1.1.0",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {

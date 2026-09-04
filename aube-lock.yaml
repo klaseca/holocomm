@@ -88,8 +88,8 @@ importers:
         specifier: ^3.5.40
         version: 3.5.41(typescript@6.0.3)
       vue-context-ts:
-        specifier: 1.0.0
-        version: 1.0.0(vue@3.5.41(typescript@6.0.3))
+        specifier: 1.1.0
+        version: 1.1.0(vue@3.5.41(typescript@6.0.3))
       vue-router:
         specifier: ^5.2.0
         version: 5.2.0(@vue/compiler-sfc@3.5.41)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(vue@3.5.41(typescript@6.0.3))
@@ -2728,9 +2728,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-context-ts@1.0.0:
-    resolution: {integrity: sha512-/YkocNWZavDltYHzN2OLTKxhlT0IFLlnAm0STkJANrPDca51RP1cpLVOW5eaxiM858efbgBc+XrvO8mKFf29Rg==}
-    engines: {node: ^22.18, npm: '>=10'}
+  vue-context-ts@1.1.0:
+    resolution: {integrity: sha512-MZoVRLz4MQo3mohL8cIhg0DzS152RCnIJAlT2b28/xV1NMqmiIYpeSzSvZv9uQPyyTPJaARfaHr+w6OKRm/how==}
     peerDependencies:
       vue: ^3
 
@@ -5338,7 +5337,7 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-context-ts@1.0.0(vue@3.5.41(typescript@6.0.3)):
+  vue-context-ts@1.1.0(vue@3.5.41(typescript@6.0.3)):
     dependencies:
       vue: 3.5.41(typescript@6.0.3)
 
