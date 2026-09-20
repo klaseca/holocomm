@@ -23,14 +23,11 @@ export interface SystemThemeQuery {
 export interface ThemeState {
   readonly preference: Readonly<Ref<ThemePreference>>
   readonly colorScheme: Readonly<Ref<ColorScheme>>
-  cyclePreference: () => void
   destroy: () => void
   setPreference: (preference: ThemePreference) => void
 }
 
 const STORAGE_KEY = 'holocomm.theme'
-
-const preferences: readonly ThemePreference[] = ['system', 'dark', 'light']
 
 export const themeStateContext = new Context({
   key: Symbol('holocomm:theme-state'),
@@ -66,12 +63,6 @@ export function createThemeState(
     apply()
   }
 
-  function cyclePreference(): void {
-    const currentIndex = preferences.indexOf(preference.value)
-
-    setPreference(preferences[(currentIndex + 1) % preferences.length])
-  }
-
   function handleSystemThemeChange(): void {
     if (preference.value === 'system') {
       apply()
@@ -88,7 +79,6 @@ export function createThemeState(
   return {
     preference: readonly(preference),
     colorScheme: readonly(colorScheme),
-    cyclePreference,
     destroy,
     setPreference,
   }

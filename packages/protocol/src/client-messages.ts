@@ -29,6 +29,11 @@ export const UpdateParticipantMediaCommandSchema = Type.Object({
   screenSharing: Type.Boolean(),
 }, { additionalProperties: false })
 
+export const UpdateParticipantProfileCommandSchema = Type.Object({
+  type: Type.Literal('participant.profile.update'),
+  displayName: Type.String({ minLength: 1, maxLength: DISPLAY_NAME_MAX_LENGTH }),
+}, { additionalProperties: false })
+
 export const SendRtcSignalCommandSchema = Type.Object({
   type: Type.Literal('rtc.signal'),
   targetPeerId: Type.String({ minLength: 1 }),
@@ -41,6 +46,7 @@ export const ClientMessageSchema = Type.Union([
   LeaveRoomCommandSchema,
   SendChatMessageCommandSchema,
   UpdateParticipantMediaCommandSchema,
+  UpdateParticipantProfileCommandSchema,
   SendRtcSignalCommandSchema,
 ])
 
@@ -48,5 +54,7 @@ export type JoinRoomCommand = Type.Static<typeof JoinRoomCommandSchema>
 export type WatchRoomCommand = Type.Static<typeof WatchRoomCommandSchema>
 export type SendChatMessageCommand = Type.Static<typeof SendChatMessageCommandSchema>
 export type UpdateParticipantMediaCommand = Type.Static<typeof UpdateParticipantMediaCommandSchema>
+export type UpdateParticipantProfileCommand
+  = Type.Static<typeof UpdateParticipantProfileCommandSchema>
 export type SendRtcSignalCommand = Type.Static<typeof SendRtcSignalCommandSchema>
 export type ClientMessage = Type.Static<typeof ClientMessageSchema>

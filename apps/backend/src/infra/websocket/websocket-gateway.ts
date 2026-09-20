@@ -176,6 +176,15 @@ export class WebSocketGateway {
         })
         break
       }
+      case 'participant.profile.update': {
+        const result = this.presence.updateProfile(connection.id, message.displayName)
+
+        this.broadcast(result.recipientConnectionIds, {
+          type: 'participant.profile.updated',
+          participant: toParticipantDto(result.participant),
+        })
+        break
+      }
       case 'rtc.signal': {
         const route = this.rtc.route(connection.id, message.targetPeerId, message.payload)
 

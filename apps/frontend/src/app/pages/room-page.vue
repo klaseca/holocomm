@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { localUserStateContext } from '#/modules/identity/application/local-user-state.ts'
@@ -14,7 +15,7 @@ const userState = localUserStateContext.inject()
 
 const roomSession = roomSessionContext.inject()
 
-const initialDisplayName = userState.profile.value?.displayName ?? ''
+const displayName = computed(() => userState.profile.value?.displayName ?? '')
 
 userState.rememberRoom(props.slug)
 
@@ -30,11 +31,8 @@ function joinRoom(slug: string): void {
   void router.push({ name: 'room', params: { slug } })
 }
 
-function editProfile(): void {
-  void router.push({
-    name: 'onboarding',
-    query: { next: router.currentRoute.value.fullPath },
-  })
+function openSettings(): void {
+  void router.push({ name: 'settings' })
 }
 </script>
 
@@ -43,13 +41,13 @@ function editProfile(): void {
     <AppNavigation
       :connected-room="roomSession.roomSlug.value"
       :current-room="slug"
-      :display-name="initialDisplayName"
+      :display-name="displayName"
       :rooms="userState.rooms.value"
-      @edit-profile="editProfile"
       @home="leaveRoom"
       @join="joinRoom"
+      @settings="openSettings"
     />
-    <RoomView :initial-display-name="initialDisplayName" :slug="slug" @leave="leaveRoom" />
+    <RoomView :initial-display-name="displayName" :slug="slug" @leave="leaveRoom" />
   </div>
 </template>
 

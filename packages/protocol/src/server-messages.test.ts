@@ -43,6 +43,18 @@ describe('serverMessageSchema', () => {
     })).toBe(true)
   })
 
+  test('accepts a participant profile event', () => {
+    expect(Check(ServerMessageSchema, {
+      type: 'participant.profile.updated',
+      participant: {
+        id: 'participant-1',
+        displayName: 'Alice Cooper',
+        microphoneMuted: false,
+        screenSharing: false,
+      },
+    })).toBe(true)
+  })
+
   test('rejects unknown error codes', () => {
     expect(
       Check(ServerMessageSchema, {

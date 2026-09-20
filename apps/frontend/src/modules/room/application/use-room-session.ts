@@ -1,4 +1,4 @@
-import { type ChatMessageDto, type ClientMessage, type ParticipantDto, type ServerMessage, ServerMessageSchema } from '@holocomm/protocol'
+import { type ChatMessageDto, type ClientMessage, normalizeDisplayName, type ParticipantDto, type ServerMessage, ServerMessageSchema } from '@holocomm/protocol'
 import { Check } from 'typebox/value'
 import { readonly, ref, shallowRef } from 'vue'
 import { Context } from 'vue-context-ts'
@@ -272,6 +272,24 @@ export function createRoomSession(webSocketUrl: string, iceServers: readonly str
     }
   }
 
+  function updateDisplayName(displayName: string): boolean {
+    currentDisplayName = normalizeDisplayName(displayName)
+
+    const selfId = self.value?.id
+
+    if (selfId != null) {
+      const update = (participant: ParticipantDto): ParticipantDto =>
+        participant.id === selfId
+          ? { ...participant, displayName: currentDisplayName }
+          : participant
+
+      participants.value = participants.value.map(update)
+      self.value = update(self.value!)
+    }
+
+    return send({ type: 'participant.profile.update', displayName: currentDisplayName })
+  }
+
   function leave(): void {
     leaving = true
     currentDisplayName = ''
@@ -444,6 +462,7 @@ export function createRoomSession(webSocketUrl: string, iceServers: readonly str
         runRtc(async () => rtc.peerLeft(message.participantId))
         break
       case 'participant.media.updated':
+      case 'participant.profile.updated':
         participants.value = participants.value.map(participant =>
           participant.id === message.participant.id ? message.participant : participant,
         )
@@ -584,6 +603,7 @@ export function createRoomSession(webSocketUrl: string, iceServers: readonly str
     sendChat,
     setParticipantVolume,
     toggleParticipantMuted,
+    updateDisplayName,
     toggleMicrophone,
     toggleScreenShare,
     configureMedia,

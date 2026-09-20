@@ -24,8 +24,5 @@ async function complete(displayName: string): Promise<void> {
 </script>
 
 <template>
-  <OnboardingView
-    :initial-display-name="userState.profile.value?.displayName"
-    @complete="complete"
-  />
+  <OnboardingView @complete="complete" />
 </template>

@@ -19,9 +19,9 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  editProfile: []
   forgetRoom: [slug: string]
   join: [room: string]
+  settings: []
 }>()
 
 const room = ref('')
@@ -58,11 +58,12 @@ function formatLastJoined(timestamp: number): string {
 <template>
   <main class="app-shell">
     <AppNavigation
+      active-page="home"
       :connected-room="connectedRoom"
       :display-name="displayName"
       :rooms="rooms"
-      @edit-profile="emit('editProfile')"
       @join="joinRoom"
+      @settings="emit('settings')"
     />
 
     <section class="dashboard">

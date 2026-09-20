@@ -154,6 +154,43 @@ describe('webSocketGateway', () => {
     })
   })
 
+  test('updates a participant name without reconnecting', () => {
+    const registry = new RoomRegistry()
+
+    const gateway = createGateway(registry)
+
+    const alice = new FakeConnection('alice-connection')
+
+    const bob = new FakeConnection('bob-connection')
+
+    gateway.connect(alice)
+    gateway.connect(bob)
+    gateway.receive(alice.id, joinCommand('Alice'))
+    gateway.receive(bob.id, joinCommand('Bob'))
+
+    gateway.receive(alice.id, JSON.stringify({
+      type: 'participant.profile.update',
+      displayName: '  Alice Cooper  ',
+    }))
+
+    const aliceId = extractSelfId(alice.messages[0])
+
+    const expectedUpdate = {
+      type: 'participant.profile.updated',
+      participant: {
+        id: aliceId,
+        displayName: 'Alice Cooper',
+        microphoneMuted: true,
+        screenSharing: false,
+      },
+    }
+
+    expect(alice.messages.at(-1)).toEqual(expectedUpdate)
+    expect(bob.messages.at(-1)).toEqual(expectedUpdate)
+    expect(registry.get('gaming-tonight')?.participants.get(aliceId)?.displayName)
+      .toBe('Alice Cooper')
+  })
+
   test('returns a normalized error for invalid input without leaking internals', () => {
     const gateway = createGateway()
 

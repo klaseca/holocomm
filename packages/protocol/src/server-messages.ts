@@ -56,6 +56,11 @@ export const ParticipantMediaUpdatedSchema = Type.Object({
   participant: ParticipantSchema,
 }, { additionalProperties: false })
 
+export const ParticipantProfileUpdatedSchema = Type.Object({
+  type: Type.Literal('participant.profile.updated'),
+  participant: ParticipantSchema,
+}, { additionalProperties: false })
+
 export const ChatMessageEventSchema = Type.Object({
   type: Type.Literal('chat.message'),
   message: ChatMessageSchema,
@@ -92,6 +97,7 @@ export const ServerMessageSchema = Type.Union([
   ParticipantJoinedSchema,
   ParticipantLeftSchema,
   ParticipantMediaUpdatedSchema,
+  ParticipantProfileUpdatedSchema,
   ChatMessageEventSchema,
   RtcSignalEventSchema,
   ErrorMessageSchema,
@@ -104,6 +110,7 @@ export type RoomPreview = Type.Static<typeof RoomPreviewSchema>
 export type ParticipantJoined = Type.Static<typeof ParticipantJoinedSchema>
 export type ParticipantLeft = Type.Static<typeof ParticipantLeftSchema>
 export type ParticipantMediaUpdated = Type.Static<typeof ParticipantMediaUpdatedSchema>
+export type ParticipantProfileUpdated = Type.Static<typeof ParticipantProfileUpdatedSchema>
 export type ChatMessageEvent = Type.Static<typeof ChatMessageEventSchema>
 export type RtcSignalEvent = Type.Static<typeof RtcSignalEventSchema>
 export type ErrorCode = Type.Static<typeof ErrorCodeSchema>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { themeStateContext } from '#/modules/preferences/application/theme-state.ts'
 import { Avatar, Tooltip } from '#/ui/primitives'
 
 import type { SavedRoom } from '../application/local-user-state.ts'
 
 defineProps<{
+  activePage?: 'home' | 'settings'
   connectedRoom?: string
   currentRoom?: string
   displayName: string
@@ -12,18 +12,10 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  editProfile: []
   home: []
   join: [slug: string]
+  settings: []
 }>()
-
-const theme = themeStateContext.inject()
-
-const themeLabels = {
-  system: 'System theme',
-  dark: 'Dark theme',
-  light: 'Light theme',
-} as const
 
 function roomInitials(slug: string): string {
   const parts = slug.split('-').filter(Boolean)
@@ -40,14 +32,14 @@ function roomInitials(slug: string): string {
   <aside class="app-navigation" aria-label="Application navigation">
     <div
       class="navigation-item"
-      :class="{ 'navigation-item--active': currentRoom === undefined }"
+      :class="{ 'navigation-item--active': activePage === 'home' }"
     >
       <Tooltip text="Home" side="right">
         <button
           type="button"
           class="navigation-button navigation-button--home"
-          :class="{ 'navigation-button--active': currentRoom === undefined }"
-          :aria-current="currentRoom === undefined ? 'page' : undefined"
+          :class="{ 'navigation-button--active': activePage === 'home' }"
+          :aria-current="activePage === 'home' ? 'page' : undefined"
           aria-label="Home"
           @click="emit('home')"
         >
@@ -83,34 +75,18 @@ function roomInitials(slug: string): string {
       </div>
     </nav>
 
-    <div class="app-navigation__utilities">
-      <Tooltip :text="themeLabels[theme.preference.value]" side="right">
-        <button
-          type="button"
-          class="navigation-button navigation-button--theme"
-          :aria-label="`${themeLabels[theme.preference.value]}. Change theme`"
-          @click="theme.cyclePreference"
-        >
-          <svg v-if="theme.preference.value === 'system'" viewBox="0 0 16 16" aria-hidden="true">
-            <rect x="1.5" y="2" width="13" height="9" rx="1.5" />
-            <path d="M5 14h6M8 11v3" />
-          </svg>
-          <svg v-else-if="theme.preference.value === 'dark'" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M13.5 10.2A6 6 0 0 1 5.8 2.5 6 6 0 1 0 13.5 10.2Z" />
-          </svg>
-          <svg v-else viewBox="0 0 16 16" aria-hidden="true">
-            <circle cx="8" cy="8" r="3" />
-            <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5 13 13M13 3l-1.5 1.5M4.5 11.5 3 13" />
-          </svg>
-        </button>
-      </Tooltip>
-
-      <Tooltip text="Edit local profile" side="right">
+    <div
+      class="navigation-item app-navigation__settings"
+      :class="{ 'navigation-item--active': activePage === 'settings' }"
+    >
+      <Tooltip text="User settings" side="right">
         <button
           type="button"
           class="app-navigation__profile"
-          aria-label="Edit local profile"
-          @click="emit('editProfile')"
+          :class="{ 'app-navigation__profile--active': activePage === 'settings' }"
+          :aria-current="activePage === 'settings' ? 'page' : undefined"
+          aria-label="User settings"
+          @click="emit('settings')"
         >
           <Avatar :name="displayName" size="sm" />
         </button>
@@ -235,12 +211,9 @@ function roomInitials(slug: string): string {
   background: transparent;
 }
 
-.app-navigation__utilities {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.app-navigation__profile:hover {
+.app-navigation__profile:hover,
+.app-navigation__profile--active {
   border-radius: var(--radius-md);
+  background: var(--color-surface-panel);
 }
 </style>

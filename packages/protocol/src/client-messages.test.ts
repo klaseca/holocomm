@@ -46,6 +46,13 @@ describe('clientMessageSchema', () => {
     })).toBe(true)
   })
 
+  test('accepts a participant profile update', () => {
+    expect(Check(ClientMessageSchema, {
+      type: 'participant.profile.update',
+      displayName: 'Alice Cooper',
+    })).toBe(true)
+  })
+
   test('validates RTC signaling payloads at the protocol boundary', () => {
     expect(Check(ClientMessageSchema, {
       type: 'rtc.signal',

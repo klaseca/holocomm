@@ -72,17 +72,6 @@ describe('theme state', () => {
     expect(state.colorScheme.value).toBe('light')
     expect(root.attributes.get('data-color-scheme')).toBe('light')
   })
-
-  test('cycles through system, dark, and light preferences', () => {
-    const state = createThemeState(new MapStorage(), new FakeRoot(), new FakeSystemTheme(false))
-
-    state.cyclePreference()
-    expect(state.preference.value).toBe('dark')
-    state.cyclePreference()
-    expect(state.preference.value).toBe('light')
-    state.cyclePreference()
-    expect(state.preference.value).toBe('system')
-  })
 })
 
 class MapStorage {

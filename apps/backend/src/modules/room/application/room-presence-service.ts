@@ -1,4 +1,4 @@
-import { createGuestIdentity } from '#/modules/identity/index.ts'
+import { createGuestIdentity, normalizeDisplayName } from '#/modules/identity/index.ts'
 import { ApplicationError } from '#/shared/errors/application-error.ts'
 
 import { normalizeRoomSlug } from '../domain/room-slug.ts'
@@ -39,6 +39,11 @@ export interface PeerRoute {
 }
 
 export interface UpdateMediaStateResult {
+  readonly participant: Participant
+  readonly recipientConnectionIds: readonly string[]
+}
+
+export interface UpdateProfileResult {
   readonly participant: Participant
   readonly recipientConnectionIds: readonly string[]
 }
@@ -163,6 +168,33 @@ export class RoomPresenceService {
 
     return {
       participant: membership.participant,
+      recipientConnectionIds: this.audienceConnectionIdsInRoom(membership.roomSlug),
+    }
+  }
+
+  updateProfile(connectionId: string, displayName: string): UpdateProfileResult {
+    const membership = this.memberships.get(connectionId)
+
+    if (membership === undefined) {
+      throw new ApplicationError('ROOM_NOT_FOUND', 'Join a room before updating the profile')
+    }
+
+    const room = this.roomRegistry.get(membership.roomSlug)
+
+    if (room === undefined) {
+      throw new ApplicationError('ROOM_NOT_FOUND', 'The current room no longer exists')
+    }
+
+    const participant = {
+      ...membership.participant,
+      displayName: normalizeDisplayName(displayName),
+    }
+
+    room.participants.set(participant.id, participant)
+    this.memberships.set(connectionId, { ...membership, participant })
+
+    return {
+      participant,
       recipientConnectionIds: this.audienceConnectionIdsInRoom(membership.roomSlug),
     }
   }

@@ -129,6 +129,7 @@ export function useRoomPreview(slug: string, webSocketUrl: string) {
 
         break
       case 'participant.media.updated':
+      case 'participant.profile.updated':
         participants.value = participants.value.map(participant => (
           participant.id === message.participant.id ? message.participant : participant
         ))

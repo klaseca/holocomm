@@ -4,6 +4,7 @@ import type { LocalUserState } from '../modules/identity/application/local-user-
 import { HomePage } from './pages/home-page.vue'
 import { OnboardingPage } from './pages/onboarding-page.vue'
 import { RoomPage } from './pages/room-page.vue'
+import { SettingsPage } from './pages/settings-page.vue'
 
 export function createAppRouter(userState: LocalUserState): Router {
   return createRouter({
@@ -19,6 +20,13 @@ export function createAppRouter(userState: LocalUserState): Router {
         path: '/onboarding',
         name: 'onboarding',
         component: OnboardingPage,
+        beforeEnter: () => requireNoProfile(userState),
+      },
+      {
+        path: '/settings',
+        name: 'settings',
+        component: SettingsPage,
+        beforeEnter: () => requireProfile(userState, '/settings'),
       },
       {
         path: '/room/:slug',
@@ -33,6 +41,10 @@ export function createAppRouter(userState: LocalUserState): Router {
       },
     ],
   })
+}
+
+function requireNoProfile(userState: LocalUserState) {
+  return userState.profile.value == null ? true : { name: 'home' }
 }
 
 function requireProfile(userState: LocalUserState, next: string) {

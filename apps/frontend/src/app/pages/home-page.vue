@@ -19,8 +19,8 @@ function joinRoom(room: string): void {
   })
 }
 
-function editProfile(): void {
-  void router.push({ name: 'onboarding' })
+function openSettings(): void {
+  void router.push({ name: 'settings' })
 }
 </script>
 
@@ -29,8 +29,8 @@ function editProfile(): void {
     :connected-room="roomSession.roomSlug.value"
     :display-name="userState.profile.value?.displayName ?? ''"
     :rooms="userState.rooms.value"
-    @edit-profile="editProfile"
     @forget-room="userState.forgetRoom"
     @join="joinRoom"
+    @settings="openSettings"
   />
 </template>

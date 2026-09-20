@@ -101,6 +101,21 @@ describe('room session orchestration', () => {
     sockets[0].receive(snapshot('alice'))
 
     expect(session.connectionState.value).toBe('connected')
+    expect(session.updateDisplayName('Alice Cooper')).toBe(true)
+    expect(sockets[0].sent.at(-1)).toEqual({
+      type: 'participant.profile.update',
+      displayName: 'Alice Cooper',
+    })
+    sockets[0].receive({
+      type: 'participant.profile.updated',
+      participant: {
+        id: 'alice',
+        displayName: 'Alice Cooper',
+        microphoneMuted: false,
+        screenSharing: false,
+      },
+    })
+    expect(session.self.value?.displayName).toBe('Alice Cooper')
     expect(session.sendChat('hello')).toBe(true)
     expect(sockets[0].sent.at(-1)).toEqual({ type: 'chat.send', content: 'hello' })
     session.destroy()

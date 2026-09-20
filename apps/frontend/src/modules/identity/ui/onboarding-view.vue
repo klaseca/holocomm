@@ -9,13 +9,9 @@ import {
   validateDisplayName,
 } from '../domain/guest-profile.ts'
 
-const props = withDefaults(defineProps<{
-  initialDisplayName?: string
-}>(), { initialDisplayName: '' })
-
 const emit = defineEmits<{ complete: [displayName: string] }>()
 
-const displayName = ref(props.initialDisplayName)
+const displayName = ref('')
 
 const displayNameError = ref<string>()
 
@@ -43,7 +39,7 @@ function submit(): void {
     <form class="profile-card" @submit.prevent="submit">
       <div>
         <p class="profile-card__label">Local profile</p>
-        <h2>{{ initialDisplayName === '' ? 'Choose your name' : 'Update your name' }}</h2>
+        <h2>Choose your name</h2>
       </div>
       <Input
         v-model="displayName"
@@ -54,7 +50,7 @@ function submit(): void {
         :maxlength="DISPLAY_NAME_MAX_LENGTH"
         placeholder="Alice"
       />
-      <Button native-type="submit" size="lg">Continue</Button>
+      <Button native-type="submit" size="lg">Enter Holocomm</Button>
       <p class="privacy-note">No account, message history, or server-side profile.</p>
     </form>
   </main>
