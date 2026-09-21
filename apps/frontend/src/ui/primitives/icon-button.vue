@@ -36,8 +36,8 @@ withDefaults(
 
 .icon-button :deep(svg) {
   display: block;
-  width: var(--size-icon-sm);
-  height: var(--size-icon-sm);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
   flex: none;
   fill: none;
   stroke: currentColor;

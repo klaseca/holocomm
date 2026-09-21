@@ -39,7 +39,7 @@ function setVolume(participantId: string, percent: number): void {
       <h2 id="participants-title">Participants</h2>
       <span>{{ participants.length }}</span>
     </header>
-    <ScrollArea class="participants__scroll">
+    <ScrollArea accessible-label="Room participants" class="participants__scroll">
       <ul class="participants__list">
         <li
           v-for="participant in participants"
@@ -141,7 +141,7 @@ function setVolume(participantId: string, percent: number): void {
   grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
   min-height: 0;
-  background: var(--color-surface-panel);
+  background: var(--bg-color-muted);
 }
 
 .participants__header,
@@ -152,17 +152,17 @@ function setVolume(participantId: string, percent: number): void {
 
 .participants__header {
   justify-content: space-between;
-  padding: var(--space-4);
+  padding: var(--base-size-16);
 }
 
 h2 {
   margin: 0;
-  font-size: var(--font-size-md);
+  font-size: var(--text-body-size-large);
 }
 
 .participants__header > span {
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-sm);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-medium);
 }
 
 .participants__scroll {
@@ -171,36 +171,34 @@ h2 {
 
 .participants__list {
   display: grid;
-  gap: var(--space-2);
+  gap: var(--base-size-8);
   margin: 0;
-  padding: 0 var(--space-3) var(--space-4);
+  padding: 0 var(--base-size-12) var(--base-size-16);
   list-style: none;
 }
 
 .participant-item {
   overflow: hidden;
-  border-radius: var(--radius-md);
+  border-radius: var(--border-radius-default);
 }
 
 .participant {
-  gap: var(--space-3);
-  min-height: var(--size-control-lg);
-  border-radius: var(--radius-md);
-  padding: var(--space-1) var(--space-2);
+  gap: var(--base-size-12);
+  min-height: var(--control-xlarge-size);
+  border-radius: var(--border-radius-default);
+  padding: var(--base-size-4) var(--base-size-8);
 }
 
 .participant:hover {
-  background: var(--color-action-neutral-background-hover);
+  background: var(--button-default-bg-color-hover);
 }
 
 .participant__avatar {
-  transition: box-shadow var(--duration-fast) var(--ease-out);
+  transition: box-shadow var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .participant--speaking .participant__avatar {
-  box-shadow:
-    0 0 0 var(--stroke-focus-offset) var(--color-surface-panel),
-    0 0 0 calc(var(--stroke-focus) + var(--stroke-focus-offset)) var(--color-presence-speaking);
+  box-shadow: var(--room-participant-speaking-box-shadow);
 }
 
 .participant__name {
@@ -211,20 +209,20 @@ h2 {
 }
 
 small {
-  color: var(--color-content-secondary);
+  color: var(--fg-color-muted);
 }
 
 .participant__statuses {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--base-size-4);
   margin-left: auto;
 }
 
 .participant__status,
 .participant__settings-button svg {
-  width: var(--size-icon-sm);
-  height: var(--size-icon-sm);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -233,61 +231,51 @@ small {
 }
 
 .participant__status--sharing {
-  color: var(--color-media-sharing);
+  color: var(--fg-color-accent);
 }
 
 .participant__status--muted {
-  color: var(--color-content-secondary);
+  color: var(--fg-color-muted);
 }
 
 .participant__status--local-muted {
-  color: var(--color-status-danger);
+  color: var(--fg-color-danger);
 }
 
 .participant__settings-button {
   display: grid;
-  width: var(--size-control-sm);
-  height: var(--size-control-sm);
+  width: var(--control-medium-size);
+  height: var(--control-medium-size);
   flex: none;
   place-items: center;
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--border-radius-medium);
   padding: 0;
-  color: var(--color-content-secondary);
+  color: var(--fg-color-muted);
   background: transparent;
   cursor: pointer;
 }
 
 .participant__settings-button:hover,
 .participant__settings-button[data-state='open'] {
-  color: var(--color-content-primary);
-  background: color-mix(in srgb, var(--color-content-primary) 12%, transparent);
-}
-
-.participant__settings-button:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
+  color: var(--fg-color-default);
+  background: var(--button-default-bg-color-hover);
 }
 </style>
 
 <!-- PopoverContent is teleported outside this component, so these styles must be global. -->
 <style>
 .participant-audio {
-  z-index: var(--layer-tooltip);
+  z-index: var(--z-index-popover);
   display: grid;
-  width: min(15rem, calc(100vw - var(--space-8)));
-  gap: var(--space-3);
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3);
-  color: var(--color-content-primary);
-  background: var(--color-surface-elevated);
-  box-shadow: 0 var(--space-2) var(--space-6) var(--color-shadow);
-}
-
-.participant-audio:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
+  width: min(15rem, calc(100vw - var(--base-size-32)));
+  gap: var(--base-size-12);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-large);
+  padding: var(--base-size-12);
+  color: var(--fg-color-default);
+  background: var(--overlay-bg-color);
+  box-shadow: var(--shadow-floating-medium);
 }
 
 .participant-audio__volume {
@@ -295,22 +283,22 @@ small {
 }
 
 .participant-audio__volume {
-  gap: var(--space-2);
+  gap: var(--base-size-8);
 }
 
 .participant-audio__heading {
   display: flex;
   justify-content: space-between;
-  color: var(--color-content-primary);
-  font-size: var(--font-size-sm);
+  color: var(--fg-color-default);
+  font-size: var(--text-body-size-medium);
 }
 
 .participant-audio__heading output {
-  color: var(--color-content-secondary);
+  color: var(--fg-color-muted);
 }
 
 .participant-audio__mute {
-  border-top: var(--stroke-default) solid var(--color-border-default);
-  padding-top: var(--space-2);
+  border-top: var(--border-width-thin) solid var(--border-color-default);
+  padding-top: var(--base-size-8);
 }
 </style>

@@ -66,39 +66,34 @@ const selectedOption = computed(() => props.options.find(option => option.value 
 .app-select__trigger {
   display: flex;
   width: 100%;
-  min-height: var(--size-control-md);
+  min-height: var(--control-large-size);
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  padding-inline: var(--space-3);
-  color: var(--color-content-primary);
-  background: var(--color-surface-inset);
+  gap: var(--base-size-12);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-default);
+  padding-inline: var(--base-size-12);
+  color: var(--fg-color-default);
+  background: var(--bg-color-default);
   font: inherit;
   cursor: pointer;
   transition:
-    border-color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out);
+    border-color var(--motion-duration-micro) var(--motion-easing-hover),
+    background-color var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .app-select__trigger[data-state='open'] {
-  border-color: var(--color-border-strong);
-}
-
-.app-select__trigger:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
+  border-color: var(--border-color-emphasis);
 }
 
 .app-select__trigger svg {
-  width: var(--size-icon-sm);
-  height: var(--size-icon-sm);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
   flex: none;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
-  transition: transform var(--duration-fast) var(--ease-out);
+  transition: transform var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .app-select__trigger[data-state='open'] svg {
@@ -106,79 +101,66 @@ const selectedOption = computed(() => props.options.find(option => option.value 
 }
 
 .app-select__content {
-  z-index: var(--layer-tooltip);
+  z-index: var(--z-index-popover);
   width: var(--reka-select-trigger-width);
   max-height: var(--reka-select-content-available-height);
   overflow: hidden;
-  border: var(--stroke-default) solid var(--color-border-strong);
-  border-radius: var(--radius-md);
-  padding: var(--space-1);
-  color: var(--color-content-primary);
-  background: var(--color-surface-elevated);
-  box-shadow: 0 var(--space-2) var(--space-6) var(--color-shadow);
+  border: var(--border-width-thin) solid var(--border-color-emphasis);
+  border-radius: var(--border-radius-default);
+  padding: var(--base-size-4);
+  color: var(--fg-color-default);
+  background: var(--overlay-bg-color);
+  box-shadow: var(--shadow-floating-medium);
 }
 
 .app-select__viewport {
   display: grid;
-  gap: var(--space-1);
+  gap: var(--base-size-4);
 }
 
 .app-select__item {
   position: relative;
   display: flex;
-  min-height: var(--size-control-md);
+  min-height: var(--control-large-size);
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2) var(--space-3);
-  outline: none;
+  gap: var(--base-size-12);
+  border-radius: var(--border-radius-medium);
+  padding: var(--base-size-8) var(--base-size-12);
   cursor: pointer;
   user-select: none;
 }
 
 .app-select__item[data-highlighted] {
-  background: color-mix(
-    in srgb,
-    var(--color-content-primary) 12%,
-    var(--color-surface-elevated)
-  );
+  background: var(--control-transparent-bg-color-hover);
 }
 
 .app-select__item[data-state='checked'] {
-  color: var(--color-content-primary);
-  background: color-mix(
-    in srgb,
-    var(--color-accent-emphasis) 16%,
-    var(--color-surface-elevated)
-  );
+  color: var(--fg-color-default);
+  background: var(--bg-color-accent-muted);
 }
 
 .app-select__item[data-state='checked'][data-highlighted] {
-  background: color-mix(
-    in srgb,
-    var(--color-accent-emphasis) 28%,
-    var(--color-surface-elevated)
-  );
+  background: var(--control-bg-color-hover);
 }
 
 .app-select__item-copy {
   display: grid;
-  gap: var(--space-1);
+  gap: var(--base-size-4);
 }
 
 .app-select__item-copy strong {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-semibold);
 }
 
 .app-select__item-copy small {
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-xs);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-small);
 }
 
 .app-select__indicator {
   flex: none;
-  color: var(--color-content-accent);
+  color: var(--fg-color-accent);
 }
 </style>

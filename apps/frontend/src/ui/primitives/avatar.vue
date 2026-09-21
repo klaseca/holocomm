@@ -35,29 +35,29 @@ const initials = computed(() =>
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: var(--stroke-default) solid var(--color-border-strong);
-  border-radius: var(--radius-full);
-  color: var(--color-content-on-emphasis);
-  background: var(--color-accent-emphasis);
-  font-weight: var(--font-weight-semibold);
+  border: var(--border-width-thin) solid var(--border-color-emphasis);
+  border-radius: var(--border-radius-full);
+  color: var(--fg-color-on-emphasis);
+  background: var(--bg-color-accent-emphasis);
+  font-weight: var(--base-text-weight-semibold);
 }
 
 .avatar--sm {
-  width: var(--size-control-sm);
-  height: var(--size-control-sm);
-  font-size: var(--font-size-sm);
+  width: var(--control-medium-size);
+  height: var(--control-medium-size);
+  font-size: var(--text-body-size-medium);
 }
 
 .avatar--md {
-  width: var(--size-control-md);
-  height: var(--size-control-md);
-  font-size: var(--font-size-sm);
+  width: var(--control-large-size);
+  height: var(--control-large-size);
+  font-size: var(--text-body-size-medium);
 }
 
 .avatar--lg {
-  width: var(--size-control-lg);
-  height: var(--size-control-lg);
-  font-size: var(--font-size-md);
+  width: var(--control-xlarge-size);
+  height: var(--control-xlarge-size);
+  font-size: var(--text-body-size-large);
 }
 
 .avatar__image {

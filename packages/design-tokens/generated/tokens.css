@@ -15,9 +15,16 @@
   --base-color-blue-7: hsl(215.6 68.6% 33.7%);
   --base-color-blue-8: hsl(215.6 71.6% 27.6%);
   --base-color-blue-9: hsl(216.6 72% 21%);
-  --base-color-blue-accent-foreground: hsl(215 70% 61%);
+  --base-color-green-0: hsl(120 68.5% 82.5%);
+  --base-color-green-1: hsl(119.2 52.3% 70.4%);
+  --base-color-green-2: hsl(121.3 43% 59.4%);
   --base-color-green-3: hsl(122.1 33.3% 50.6%);
+  --base-color-green-4: hsl(123 36.1% 42.9%);
   --base-color-green-5: hsl(124.1 41.2% 34.7%);
+  --base-color-green-6: hsl(124.8 42.3% 29.2%);
+  --base-color-green-7: hsl(125.8 41.9% 24.3%);
+  --base-color-green-8: hsl(128.2 44.9% 19.2%);
+  --base-color-green-9: hsl(130.3 50.7% 13.5%);
   --base-color-neutral-0: var(--base-color-black);
   --base-color-neutral-1: hsl(216 27.8% 7.1%);
   --base-color-neutral-2: hsl(214.3 25% 11%);
@@ -32,150 +39,256 @@
   --base-color-neutral-11: hsl(216 19.5% 84.9%);
   --base-color-neutral-12: hsl(210 66.7% 96.5%);
   --base-color-neutral-13: var(--base-color-white);
+  --base-color-red-0: hsl(6.8 100% 91.4%);
+  --base-color-red-1: hsl(6.1 100% 84.5%);
+  --base-color-red-2: hsl(4.6 100% 77.1%);
   --base-color-red-3: hsl(3.8 86.5% 68%);
+  --base-color-red-4: hsl(3.1 74.8% 59.6%);
   --base-color-red-5: hsl(2.1 57.5% 50.2%);
   --base-color-red-6: hsl(0.9 59.4% 42.5%);
   --base-color-red-7: hsl(0 61.3% 35.5%);
+  --base-color-red-8: hsl(358.7 65.5% 28.4%);
+  --base-color-red-9: hsl(357.7 72.2% 21.2%);
+  /* Primer transparent color restored after conversion to DTCG. */
+  --base-color-transparent: rgb(0% 0% 0% / 0);
   --base-color-white: hsl(210 31.6% 85.1%);
+  --base-color-yellow-0: hsl(44.9 93% 77.5%);
+  --base-color-yellow-1: hsl(44 76.8% 64.5%);
   --base-color-yellow-2: hsl(41.4 67.7% 55.1%);
+  --base-color-yellow-3: hsl(39.8 67.8% 46.3%);
+  --base-color-yellow-4: hsl(40.5 79.4% 38%);
   --base-color-yellow-5: hsl(40.8 100% 29.4%);
-  /* Strong accent background for active states and focused states */
+  --base-color-yellow-6: hsl(39.4 100% 25.1%);
+  --base-color-yellow-7: hsl(37.8 100% 21.2%);
+  --base-color-yellow-8: hsl(36.4 100% 17.5%);
+  --base-color-yellow-9: hsl(33.9 100% 13.5%);
+  --base-duration-0: 0ms;
+  --base-duration-50: 50ms;
+  --base-duration-100: 100ms;
+  --base-duration-200: 200ms;
+  --base-duration-300: 300ms;
+  --base-duration-400: 400ms;
+  --base-duration-500: 500ms;
+  --base-duration-600: 600ms;
+  --base-duration-700: 700ms;
+  --base-duration-800: 800ms;
+  --base-duration-900: 900ms;
+  --base-duration-1000: 1000ms;
+  /* CSS default easing. Use for hover state changes and micro-interactions. */
+  --base-easing-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Accelerating motion. Use for elements exiting the viewport (moving off-screen). */
+  --base-easing-ease-in: cubic-bezier(0.7, 0.1, 0.75, 0.9);
+  /* Smooth acceleration and deceleration. Use for elements moving or morphing within the viewport. */
+  --base-easing-ease-in-out: cubic-bezier(0.6, 0, 0.2, 1);
+  /* Decelerating motion. Use for elements entering the viewport or appearing on screen. */
+  --base-easing-ease-out: cubic-bezier(0.3, 0.8, 0.6, 1);
+  /* Constant motion with no acceleration. Use for continuous animations like progress bars or loaders. */
+  --base-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --base-size-2: 2px;
+  --base-size-4: 4px;
+  --base-size-6: 6px;
+  --base-size-8: 8px;
+  --base-size-12: 12px;
+  --base-size-16: 16px;
+  --base-size-20: 20px;
+  --base-size-24: 24px;
+  --base-size-28: 28px;
+  --base-size-32: 32px;
+  --base-size-36: 36px;
+  --base-size-40: 40px;
+  --base-size-44: 44px;
+  --base-size-48: 48px;
+  --base-size-64: 64px;
+  --base-size-80: 80px;
+  --base-size-96: 96px;
+  --base-size-112: 112px;
+  --base-size-128: 128px;
+  --base-size-negative-2: -2px;
+  --base-size-negative-4: -4px;
+  --base-size-negative-6: -6px;
+  --base-size-negative-8: -8px;
+  --base-size-negative-12: -12px;
+  --base-size-negative-16: -16px;
+  --base-size-negative-20: -20px;
+  --base-size-negative-24: -24px;
+  --base-size-negative-28: -28px;
+  --base-size-negative-32: -32px;
+  --base-size-negative-36: -36px;
+  --base-size-negative-40: -40px;
+  --base-size-negative-44: -44px;
+  --base-size-negative-48: -48px;
+  /* Use sparingly for very small text or when maximum readability is critical. Best for footnotes, legal text, or content requiring high accessibility. */
+  --base-text-line-height-loose: 1.75;
+  /* Default choice for body text and general UI content. Provides optimal readability for paragraphs, descriptions, and most multi-line text. Use when unsure which line-height to pick. */
+  --base-text-line-height-normal: 1.5;
+  /* Use for longer-form content, smaller text sizes (12-13px), or when increased readability is desired. Good for text that needs extra breathing room. */
+  --base-text-line-height-relaxed: 1.625;
+  /* Use for display text, large headings, or short multi-line text where moderate density is needed. Good for hero sections and marketing headlines. */
+  --base-text-line-height-snug: 1.375;
+  /* Use for single-line text in compact UI elements like labels, badges, buttons, or captions where vertical space is limited. Not recommended for multi-line body text due to reduced readability. */
+  --base-text-line-height-tight: 1.25;
+  /* 40px - Display text for hero sections. */
+  --base-text-size-2xl: 2.5rem;
+  /* 20px - Medium titles and subtitles. */
+  --base-text-size-lg: 1.25rem;
+  /* 16px - Large body text and small titles. */
+  --base-text-size-md: 1rem;
+  /* 14px - Default body text size for UI. */
+  --base-text-size-sm: 0.875rem;
+  /* 32px - Large titles and page headings. */
+  --base-text-size-xl: 2rem;
+  /* 12px - Smallest text size for captions and compact UI elements. */
+  --base-text-size-xs: 0.75rem;
+  --base-text-weight-light: 300;
+  --base-text-weight-medium: 500;
+  --base-text-weight-normal: 400;
+  --base-text-weight-semibold: 600;
+  --base-z-index-300: 300;
+  --base-z-index-400: 400;
+  --base-z-index-500: 500;
   --bg-color-accent-emphasis: var(--base-color-blue-5);
-  /* Default background color for pages and main content areas */
+  /* Primer dark-dimmed accent-muted background with restored alpha. */
+  --bg-color-accent-muted: hsl(215.3 75.1% 57.5% / 0.1);
+  --bg-color-danger-emphasis: var(--base-color-red-5);
+  /* Primer dark-dimmed danger-muted background with restored alpha. */
+  --bg-color-danger-muted: hsl(3.1 74.8% 59.6% / 0.1);
   --bg-color-default: var(--base-color-neutral-3);
-  /* Background for disabled interactive elements */
   --bg-color-disabled: var(--base-color-neutral-5);
-  /* Inset background for recessed content areas like wells or sunken panels */
+  --bg-color-emphasis: var(--base-color-neutral-7);
   --bg-color-inset: var(--base-color-neutral-2);
-  /* Muted background for secondary content areas and subtle grouping */
   --bg-color-muted: var(--base-color-neutral-4);
-  --bgColor-accent-emphasis: var(--base-color-blue-5);
-  --bgColor-default: var(--base-color-neutral-3);
-  --bgColor-disabled: var(--base-color-neutral-5);
-  --bgColor-inset: var(--base-color-neutral-2);
-  --bgColor-muted: var(--base-color-neutral-4);
-  /* Strong accent border for selected or focused elements */
+  /* Strong success background for prominent positive actions */
+  --bg-color-success-emphasis: hsl(137.1 62.9% 32.7%);
   --border-color-accent-emphasis: var(--base-color-blue-3);
-  /* Default border color for most UI elements */
   --border-color-default: var(--base-color-neutral-7);
-  /* Strong border for emphasis and visual weight */
   --border-color-emphasis: var(--base-color-neutral-8);
-  --borderColor-accent-emphasis: var(--base-color-blue-3);
-  --borderColor-default: var(--base-color-neutral-7);
-  --borderColor-emphasis: var(--base-color-neutral-8);
-  --color-accent-active: var(--base-color-blue-7);
-  --color-accent-emphasis: var(--bgColor-accent-emphasis);
-  --color-accent-hover: hsl(215.5 68% 49%);
-  --color-action-danger-background-active: var(--base-color-red-7);
-  --color-action-danger-background-hover: hsl(2 65% 50%);
-  --color-action-danger-background-rest: var(--base-color-red-5);
-  --color-action-danger-foreground: var(--color-content-on-emphasis);
-  --color-action-disabled-background: var(--bgColor-disabled);
-  --color-action-disabled-foreground: var(--color-content-disabled);
-  --color-action-neutral-background-hover: var(--control-bgColor-hover);
-  --color-action-neutral-background-rest: var(--control-bgColor-rest);
-  --color-action-neutral-foreground: var(--color-content-primary);
-  --color-action-primary-background-active: var(--color-accent-active);
-  --color-action-primary-background-hover: var(--color-accent-hover);
-  --color-action-primary-background-rest: var(--color-accent-emphasis);
-  --color-action-primary-foreground: var(--color-content-on-emphasis);
-  --color-backdrop: rgb(1.9608% 2.7451% 4.3137% / 0.8);
-  --color-border-accent: var(--borderColor-accent-emphasis);
-  --color-border-default: var(--borderColor-default);
-  --color-border-strong: var(--borderColor-emphasis);
-  --color-content-accent: var(--base-color-blue-accent-foreground);
-  --color-content-disabled: var(--fgColor-disabled);
-  --color-content-on-emphasis: var(--fgColor-onEmphasis);
-  --color-content-primary: var(--fgColor-default);
-  --color-content-secondary: var(--fgColor-muted);
-  --color-control-thumb: var(--color-content-on-emphasis);
-  --color-focus: var(--color-border-accent);
-  --color-media-sharing: var(--color-content-accent);
-  --color-presence-online: var(--fgColor-success);
-  --color-presence-speaking: var(--fgColor-success);
-  --color-shadow: rgb(1.9608% 2.7451% 4.3137% / 0.35);
-  --color-status-danger: var(--fgColor-danger);
-  --color-status-success: var(--fgColor-success);
-  --color-status-warning: var(--fgColor-attention);
-  --color-surface-canvas: var(--bgColor-default);
-  --color-surface-elevated: var(--control-bgColor-rest);
-  --color-surface-inset: var(--bgColor-inset);
-  --color-surface-panel: var(--bgColor-muted);
-  --color-tooltip-background: var(--base-color-neutral-7);
-  --color-tooltip-foreground: var(--color-content-primary);
+  --border-color-muted: var(--border-color-default);
+  --border-color-success-emphasis: var(--base-color-green-5);
+  /* Semantic token: preferred default border radius for standard UI components. Use this in normal component code unless a specific radius is intentionally required. */
+  --border-radius-default: var(--border-radius-medium);
+  /* Shape token for fully rounded or pill-shaped elements. */
+  --border-radius-full: 9999px;
+  /* Scale token: 12px radius for larger surfaces or softer container treatments. */
+  --border-radius-large: 12px;
+  /* Scale token: 6px radius in the border-radius scale. Use when selecting a specific radius intentionally. */
+  --border-radius-medium: 6px;
+  /* Scale token: 1px border width. Use when selecting an explicit size from the border-width scale. */
+  --border-width-thin: 1px;
+  --button-danger-bg-color-active: var(--bg-color-danger-emphasis);
+  --button-danger-bg-color-hover: var(--base-color-red-6);
+  --button-danger-bg-color-rest: var(--control-bg-color-rest);
+  /* Primer dark-dimmed danger button active foreground override. */
+  --button-danger-fg-color-active: hsl(0 0% 100%);
+  /* Primer dark-dimmed danger button hover foreground override. */
+  --button-danger-fg-color-hover: hsl(0 0% 100%);
+  --button-danger-fg-color-rest: var(--fg-color-danger);
+  --button-default-bg-color-active: var(--control-bg-color-active);
+  --button-default-bg-color-hover: var(--control-bg-color-hover);
+  --button-default-bg-color-rest: var(--control-bg-color-rest);
+  --button-default-fg-color-rest: var(--control-fg-color-rest);
+  --button-invisible-bg-color-hover: var(--control-transparent-bg-color-hover);
+  /* Primer transparent color restored after conversion to DTCG. */
+  --button-invisible-bg-color-rest: var(--control-transparent-bg-color-rest);
+  --button-invisible-fg-color-hover: var(--control-fg-color-rest);
+  --button-invisible-fg-color-rest: var(--control-fg-color-rest);
+  --button-primary-bg-color-active: var(--base-color-green-5);
+  /* Primer dark-dimmed primary button hover background. */
+  --button-primary-bg-color-hover: hsl(124 38.9% 37.8%);
+  /* Strong success background for prominent positive actions */
+  --button-primary-bg-color-rest: var(--bg-color-success-emphasis);
+  /* Primer dark-dimmed primary button foreground override. */
+  --button-primary-fg-color-rest: hsl(0 0% 100%);
+  --control-bg-color-active: var(--base-color-neutral-7);
+  --control-bg-color-disabled: var(--bg-color-disabled);
   --control-bg-color-hover: var(--base-color-neutral-6);
   --control-bg-color-rest: var(--base-color-neutral-5);
-  --control-bgColor-hover: var(--base-color-neutral-6);
-  --control-bgColor-rest: var(--base-color-neutral-5);
-  --duration-fast: 120ms;
-  --duration-normal: 180ms;
-  --duration-slow: 240ms;
-  --ease-in: cubic-bezier(0.55, 0.06, 0.68, 0.19);
-  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
-  /* Attention text for warnings and caution states */
+  --control-checked-bg-color-rest: var(--bg-color-accent-emphasis);
+  --control-fg-color-disabled: var(--fg-color-disabled);
+  --control-fg-color-rest: var(--base-color-neutral-12);
+  --control-knob-bg-color-checked: var(--base-color-neutral-13);
+  --control-knob-bg-color-rest: var(--base-color-neutral-5);
+  --control-large-size: var(--base-size-40);
+  --control-medium-size: var(--base-size-32);
+  --control-track-bg-color-hover: var(--base-color-neutral-3);
+  --control-track-bg-color-rest: var(--base-color-neutral-2);
+  --control-track-border-color-rest: var(--base-color-neutral-7);
+  /* Primer dark-dimmed invisible-control hover background with restored alpha. */
+  --control-transparent-bg-color-hover: hsl(215.3 7.8% 42.9% / 0.15);
+  /* Primer transparent color restored after conversion to DTCG. */
+  --control-transparent-bg-color-rest: var(--base-color-transparent);
+  --control-xlarge-size: var(--base-size-48);
+  --fg-color-accent: var(--base-color-blue-3);
   --fg-color-attention: var(--base-color-yellow-2);
-  /* Danger text for errors and destructive actions */
   --fg-color-danger: var(--base-color-red-3);
-  /* Default text color for primary content and headings */
   --fg-color-default: var(--base-color-neutral-11);
-  /* Text color for disabled interactive elements */
   --fg-color-disabled: var(--base-color-neutral-8);
-  /* Muted text for secondary content and less important information */
   --fg-color-muted: var(--base-color-neutral-9);
-  /* Text color for use on emphasis backgrounds */
   --fg-color-on-emphasis: var(--base-color-neutral-12);
-  /* Success text for positive feedback and completed states */
   --fg-color-success: var(--base-color-green-3);
-  --fgColor-attention: var(--base-color-yellow-2);
-  --fgColor-danger: var(--base-color-red-3);
-  --fgColor-default: var(--base-color-neutral-11);
-  --fgColor-disabled: var(--base-color-neutral-8);
-  --fgColor-muted: var(--base-color-neutral-9);
-  --fgColor-onEmphasis: var(--base-color-neutral-12);
-  --fgColor-success: var(--base-color-green-3);
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fg-color-white: var(--base-color-neutral-0);
+  --focus-outline-color: var(--border-color-accent-emphasis);
+  /* Focus outline offset (-2px). Negative value creates an inset outline for keyboard focus indicators, ensuring the focus ring stays within the element bounds */
+  --focus-outline-offset: -2px;
+  /* Focus outline width (2px). Standard width for keyboard focus indicators to meet WCAG 2.4.7 accessibility requirements */
+  --focus-outline-width: 2px;
+  /* Holocomm's system font stack without a bundled webfont. */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-size-2xl: 40px;
-  --font-size-lg: 20px;
-  --font-size-md: 16px;
-  --font-size-sm: 14px;
-  --font-size-xl: 32px;
-  --font-size-xs: 12px;
-  --font-weight-medium: 500;
-  --font-weight-regular: 400;
-  --font-weight-semibold: 600;
-  --layer-modal: 100;
-  --layer-overlay: 80;
-  --layer-tooltip: 300;
+  /* Width of the persistent room navigation rail. */
   --layout-app-navigation: 72px;
+  /* Maximum width of centered dashboard content. */
   --layout-content-max: 1152px;
-  --layout-dialog-max: 440px;
+  /* Width of the media settings dialog between Primer's large and xlarge overlays. */
   --layout-dialog-wide-max: 720px;
+  /* Width of the custom participant-list scrollbar. */
   --layout-scrollbar: 10px;
+  /* Minimum viewport width supported by the application shell. */
   --layout-viewport-min: 320px;
-  --line-height-body: 1.5;
-  --line-height-compact: 1.3;
-  --line-height-relaxed: 1.55;
-  --radius-full: 999px;
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --radius-sm: 6px;
-  --size-control-lg: 48px;
-  --size-control-md: 40px;
-  --size-control-sm: 32px;
-  --size-icon-sm: 16px;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --stroke-default: 1px;
-  --stroke-focus: 2px;
-  --stroke-focus-offset: 2px;
+  --motion-duration-micro: var(--base-duration-100);
+  --motion-duration-short: var(--base-duration-200);
+  /* CSS default easing. Use for hover state changes and micro-interactions. */
+  --motion-easing-hover: var(--base-easing-ease);
+  /* Darkens the page behind a modal in the dark-dimmed theme. */
+  --overlay-backdrop-bg-color: rgb(0% 0% 0% / 0.55);
+  --overlay-bg-color: var(--base-color-neutral-5);
+  --overlay-border-color: var(--border-color-muted);
+  --overlay-width-medium: 480px;
+  --room-connection-online-box-shadow: 0px 0px 0px var(--base-size-12) var(--bg-color-default);
+  --room-participant-speaking-box-shadow: 0px 0px 0px var(--base-size-2) var(--bg-color-muted), 0px 0px 0px var(--base-size-4) var(--border-color-success-emphasis);
+  --shadow-floating-medium: 0px 0px 0px 1px var(--overlay-border-color), 0px 8px 16px -4px rgb(0% 0% 0% / 0.4), 0px 4px 32px -4px rgb(0% 0% 0% / 0.4), 0px 24px 48px -12px rgb(0% 0% 0% / 0.4);
+  --shadow-floating-small: 0px 0px 0px 1px var(--overlay-border-color), 0px 6px 12px -3px rgb(0% 0% 0% / 0.4), 0px 6px 18px 0px rgb(0% 0% 0% / 0.4);
+  /* Primer dark-dimmed resting medium shadow with restored alpha. */
+  --shadow-resting-medium: 0px 1px 1px 0px rgb(0% 0% 0% / 0.4), 0px 3px 6px 0px rgb(0% 0% 0% / 0.8);
+  /* Default choice for body text and general UI content. Provides optimal readability for paragraphs, descriptions, and most multi-line text. Use when unsure which line-height to pick. */
+  --text-body-line-height-medium: var(--base-text-line-height-normal);
+  /* 16px - Large body text and small titles. */
+  --text-body-size-large: var(--base-text-size-md);
+  /* 14px - Default body text size for UI. */
+  --text-body-size-medium: var(--base-text-size-sm);
+  /* 12px - Smallest text size for captions and compact UI elements. */
+  --text-body-size-small: var(--base-text-size-xs);
+  /* 40px - Display text for hero sections. */
+  --text-display-size: var(--base-text-size-2xl);
+  /* 32px - Large titles and page headings. */
+  --text-title-size-large: var(--base-text-size-xl);
+  /* 20px - Medium titles and subtitles. */
+  --text-title-size-medium: var(--base-text-size-lg);
+  /* Dark theme canvas shown inside the theme picker. */
+  --theme-preview-dark-canvas-bg-color: rgb(12.941% 15.686% 18.824%);
+  /* Dark theme navigation shown inside the theme picker. */
+  --theme-preview-dark-navigation-bg-color: rgb(10.588% 12.941% 15.686%);
+  /* Dark theme panel shown inside the theme picker. */
+  --theme-preview-dark-panel-bg-color: rgb(17.647% 20.784% 24.706%);
+  /* Light theme canvas shown inside the theme picker. */
+  --theme-preview-light-canvas-bg-color: rgb(96.471% 97.255% 98.039%);
+  /* Light theme navigation shown inside the theme picker. */
+  --theme-preview-light-navigation-bg-color: rgb(91.765% 93.333% 94.902%);
+  /* Light theme panel shown inside the theme picker. */
+  --theme-preview-light-panel-bg-color: rgb(100% 100% 100%);
+  --tooltip-bg-color: var(--bg-color-emphasis);
+  --tooltip-fg-color: var(--fg-color-on-emphasis);
+  --z-index-modal: var(--base-z-index-400);
+  --z-index-overlay: var(--base-z-index-300);
+  --z-index-popover: var(--base-z-index-500);
 }
 
 [data-color-scheme='light'] {
@@ -191,8 +304,16 @@
   --base-color-blue-7: hsl(214.4 95.8% 27.8%);
   --base-color-blue-8: hsl(216 82.6% 22.5%);
   --base-color-blue-9: hsl(216.7 100% 16.7%);
+  --base-color-green-0: hsl(132.7 80.5% 92%);
+  --base-color-green-1: hsl(133.6 66% 80.4%);
+  --base-color-green-2: hsl(135.3 61.8% 65.1%);
   --base-color-green-3: hsl(136.5 49.6% 52.5%);
+  --base-color-green-4: hsl(136.6 56.9% 41%);
   --base-color-green-5: hsl(137.2 66% 30%);
+  --base-color-green-6: hsl(137.6 70.7% 22.7%);
+  --base-color-green-7: hsl(140.8 90.4% 16.3%);
+  --base-color-green-8: hsl(141.6 100% 12%);
+  --base-color-green-9: hsl(142.7 100% 8.8%);
   --base-color-neutral-0: var(--base-color-white);
   --base-color-neutral-1: hsl(210 28.6% 97.3%);
   --base-color-neutral-2: hsl(210 23.1% 94.9%);
@@ -207,148 +328,254 @@
   --base-color-neutral-11: hsl(212.3 10.2% 24.9%);
   --base-color-neutral-12: hsl(213.3 10.8% 16.3%);
   --base-color-neutral-13: var(--base-color-black);
+  --base-color-red-0: hsl(5.5 100% 95.7%);
+  --base-color-red-1: hsl(3.5 100% 89.8%);
+  --base-color-red-2: hsl(2.1 100% 82.9%);
   --base-color-red-3: hsl(359.5 100% 75.3%);
+  --base-color-red-4: hsl(358.7 94.8% 62.5%);
   --base-color-red-5: hsl(355.8 71.8% 47.3%);
   --base-color-red-6: hsl(350.4 84.3% 34.9%);
   --base-color-red-7: hsl(348.8 89.8% 26.9%);
+  --base-color-red-8: hsl(345.9 100% 20%);
+  --base-color-red-9: hsl(344.2 100% 14.9%);
+  /* Primer transparent color restored after conversion to DTCG. */
+  --base-color-transparent: rgb(0% 0% 0% / 0);
   --base-color-white: hsl(0 0% 100%);
+  --base-color-yellow-0: hsl(52.8 100% 88.6%);
+  --base-color-yellow-1: hsl(48 92.6% 73.5%);
   --base-color-yellow-2: hsl(45.7 78.7% 61.4%);
+  --base-color-yellow-3: hsl(43.9 66.1% 50.2%);
+  --base-color-yellow-4: hsl(42.4 100% 37.5%);
   --base-color-yellow-5: hsl(40.1 100% 30.2%);
-  /* Strong accent background for active states and focused states */
+  --base-color-yellow-6: hsl(37.4 100% 24.5%);
+  --base-color-yellow-7: hsl(36.1 98% 19.6%);
+  --base-color-yellow-8: hsl(35.1 100% 15.1%);
+  --base-color-yellow-9: hsl(35.6 100% 11.6%);
+  --base-duration-0: 0ms;
+  --base-duration-50: 50ms;
+  --base-duration-100: 100ms;
+  --base-duration-200: 200ms;
+  --base-duration-300: 300ms;
+  --base-duration-400: 400ms;
+  --base-duration-500: 500ms;
+  --base-duration-600: 600ms;
+  --base-duration-700: 700ms;
+  --base-duration-800: 800ms;
+  --base-duration-900: 900ms;
+  --base-duration-1000: 1000ms;
+  /* CSS default easing. Use for hover state changes and micro-interactions. */
+  --base-easing-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Accelerating motion. Use for elements exiting the viewport (moving off-screen). */
+  --base-easing-ease-in: cubic-bezier(0.7, 0.1, 0.75, 0.9);
+  /* Smooth acceleration and deceleration. Use for elements moving or morphing within the viewport. */
+  --base-easing-ease-in-out: cubic-bezier(0.6, 0, 0.2, 1);
+  /* Decelerating motion. Use for elements entering the viewport or appearing on screen. */
+  --base-easing-ease-out: cubic-bezier(0.3, 0.8, 0.6, 1);
+  /* Constant motion with no acceleration. Use for continuous animations like progress bars or loaders. */
+  --base-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --base-size-2: 2px;
+  --base-size-4: 4px;
+  --base-size-6: 6px;
+  --base-size-8: 8px;
+  --base-size-12: 12px;
+  --base-size-16: 16px;
+  --base-size-20: 20px;
+  --base-size-24: 24px;
+  --base-size-28: 28px;
+  --base-size-32: 32px;
+  --base-size-36: 36px;
+  --base-size-40: 40px;
+  --base-size-44: 44px;
+  --base-size-48: 48px;
+  --base-size-64: 64px;
+  --base-size-80: 80px;
+  --base-size-96: 96px;
+  --base-size-112: 112px;
+  --base-size-128: 128px;
+  --base-size-negative-2: -2px;
+  --base-size-negative-4: -4px;
+  --base-size-negative-6: -6px;
+  --base-size-negative-8: -8px;
+  --base-size-negative-12: -12px;
+  --base-size-negative-16: -16px;
+  --base-size-negative-20: -20px;
+  --base-size-negative-24: -24px;
+  --base-size-negative-28: -28px;
+  --base-size-negative-32: -32px;
+  --base-size-negative-36: -36px;
+  --base-size-negative-40: -40px;
+  --base-size-negative-44: -44px;
+  --base-size-negative-48: -48px;
+  /* Use sparingly for very small text or when maximum readability is critical. Best for footnotes, legal text, or content requiring high accessibility. */
+  --base-text-line-height-loose: 1.75;
+  /* Default choice for body text and general UI content. Provides optimal readability for paragraphs, descriptions, and most multi-line text. Use when unsure which line-height to pick. */
+  --base-text-line-height-normal: 1.5;
+  /* Use for longer-form content, smaller text sizes (12-13px), or when increased readability is desired. Good for text that needs extra breathing room. */
+  --base-text-line-height-relaxed: 1.625;
+  /* Use for display text, large headings, or short multi-line text where moderate density is needed. Good for hero sections and marketing headlines. */
+  --base-text-line-height-snug: 1.375;
+  /* Use for single-line text in compact UI elements like labels, badges, buttons, or captions where vertical space is limited. Not recommended for multi-line body text due to reduced readability. */
+  --base-text-line-height-tight: 1.25;
+  /* 40px - Display text for hero sections. */
+  --base-text-size-2xl: 2.5rem;
+  /* 20px - Medium titles and subtitles. */
+  --base-text-size-lg: 1.25rem;
+  /* 16px - Large body text and small titles. */
+  --base-text-size-md: 1rem;
+  /* 14px - Default body text size for UI. */
+  --base-text-size-sm: 0.875rem;
+  /* 32px - Large titles and page headings. */
+  --base-text-size-xl: 2rem;
+  /* 12px - Smallest text size for captions and compact UI elements. */
+  --base-text-size-xs: 0.75rem;
+  --base-text-weight-light: 300;
+  --base-text-weight-medium: 500;
+  --base-text-weight-normal: 400;
+  --base-text-weight-semibold: 600;
+  --base-z-index-300: 300;
+  --base-z-index-400: 400;
+  --base-z-index-500: 500;
   --bg-color-accent-emphasis: var(--base-color-blue-5);
-  /* Default background color for pages and main content areas */
+  /* Subtle accent background for informational or selected elements */
+  --bg-color-accent-muted: var(--base-color-blue-0);
+  --bg-color-danger-emphasis: var(--base-color-red-5);
+  /* Muted danger background for error states and destructive action contexts */
+  --bg-color-danger-muted: var(--base-color-red-0);
   --bg-color-default: var(--base-color-neutral-0);
-  /* Background for disabled interactive elements */
   --bg-color-disabled: var(--base-color-neutral-2);
-  /* Inset background for recessed content areas like wells or sunken panels */
-  --bg-color-inset: var(--base-color-neutral-2);
-  /* Muted background for secondary content areas and subtle grouping */
+  --bg-color-emphasis: var(--base-color-neutral-12);
+  --bg-color-inset: var(--bg-color-muted);
   --bg-color-muted: var(--base-color-neutral-1);
-  --bgColor-accent-emphasis: var(--base-color-blue-5);
-  --bgColor-default: var(--base-color-neutral-0);
-  --bgColor-disabled: var(--base-color-neutral-2);
-  --bgColor-inset: var(--base-color-neutral-2);
-  --bgColor-muted: var(--base-color-neutral-1);
-  /* Strong accent border for selected or focused elements */
+  /* Strong success background for prominent positive actions */
+  --bg-color-success-emphasis: hsl(137.1 62.9% 32.7%);
   --border-color-accent-emphasis: var(--base-color-blue-5);
-  /* Default border color for most UI elements */
   --border-color-default: var(--base-color-neutral-6);
-  /* Strong border for emphasis and visual weight */
   --border-color-emphasis: var(--base-color-neutral-8);
-  --borderColor-accent-emphasis: var(--base-color-blue-5);
-  --borderColor-default: var(--base-color-neutral-6);
-  --borderColor-emphasis: var(--base-color-neutral-8);
-  --color-accent-active: var(--base-color-blue-7);
-  --color-accent-emphasis: var(--bgColor-accent-emphasis);
-  --color-accent-hover: var(--base-color-blue-6);
-  --color-action-danger-background-active: var(--base-color-red-7);
-  --color-action-danger-background-hover: var(--base-color-red-6);
-  --color-action-danger-background-rest: var(--base-color-red-5);
-  --color-action-danger-foreground: var(--color-content-on-emphasis);
-  --color-action-disabled-background: var(--bgColor-disabled);
-  --color-action-disabled-foreground: var(--color-content-disabled);
-  --color-action-neutral-background-hover: var(--control-bgColor-hover);
-  --color-action-neutral-background-rest: var(--control-bgColor-rest);
-  --color-action-neutral-foreground: var(--color-content-primary);
-  --color-action-primary-background-active: var(--color-accent-active);
-  --color-action-primary-background-hover: var(--color-accent-hover);
-  --color-action-primary-background-rest: var(--color-accent-emphasis);
-  --color-action-primary-foreground: var(--color-content-on-emphasis);
-  --color-backdrop: rgb(1.9608% 2.7451% 4.3137% / 0.8);
-  --color-border-accent: var(--borderColor-accent-emphasis);
-  --color-border-default: var(--borderColor-default);
-  --color-border-strong: var(--borderColor-emphasis);
-  --color-content-accent: var(--base-color-blue-5);
-  --color-content-disabled: var(--fgColor-disabled);
-  --color-content-on-emphasis: var(--fgColor-onEmphasis);
-  --color-content-primary: var(--fgColor-default);
-  --color-content-secondary: var(--fgColor-muted);
-  --color-control-thumb: var(--color-content-on-emphasis);
-  --color-focus: var(--color-border-accent);
-  --color-media-sharing: var(--color-content-accent);
-  --color-presence-online: var(--fgColor-success);
-  --color-presence-speaking: var(--fgColor-success);
-  --color-shadow: rgb(1.9608% 2.7451% 4.3137% / 0.35);
-  --color-status-danger: var(--fgColor-danger);
-  --color-status-success: var(--fgColor-success);
-  --color-status-warning: var(--fgColor-attention);
-  --color-surface-canvas: var(--bgColor-default);
-  --color-surface-elevated: var(--control-bgColor-rest);
-  --color-surface-inset: var(--bgColor-inset);
-  --color-surface-panel: var(--bgColor-muted);
-  --color-tooltip-background: var(--color-surface-elevated);
-  --color-tooltip-foreground: var(--color-content-primary);
-  --control-bg-color-hover: var(--base-color-neutral-3);
-  --control-bg-color-rest: var(--base-color-neutral-2);
-  --control-bgColor-hover: var(--base-color-neutral-3);
-  --control-bgColor-rest: var(--base-color-neutral-2);
-  --duration-fast: 120ms;
-  --duration-normal: 180ms;
-  --duration-slow: 240ms;
-  --ease-in: cubic-bezier(0.55, 0.06, 0.68, 0.19);
-  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
-  /* Attention text for warnings and caution states */
+  --border-color-muted: var(--border-color-default);
+  --border-color-success-emphasis: var(--base-color-green-5);
+  /* Semantic token: preferred default border radius for standard UI components. Use this in normal component code unless a specific radius is intentionally required. */
+  --border-radius-default: var(--border-radius-medium);
+  /* Shape token for fully rounded or pill-shaped elements. */
+  --border-radius-full: 9999px;
+  /* Scale token: 12px radius for larger surfaces or softer container treatments. */
+  --border-radius-large: 12px;
+  /* Scale token: 6px radius in the border-radius scale. Use when selecting a specific radius intentionally. */
+  --border-radius-medium: 6px;
+  /* Scale token: 1px border width. Use when selecting an explicit size from the border-width scale. */
+  --border-width-thin: 1px;
+  --button-danger-bg-color-active: var(--base-color-red-6);
+  --button-danger-bg-color-hover: var(--bg-color-danger-emphasis);
+  --button-danger-bg-color-rest: var(--control-bg-color-rest);
+  /* Primer dark-dimmed danger button active foreground override. */
+  --button-danger-fg-color-active: var(--base-color-neutral-0);
+  /* Primer dark-dimmed danger button hover foreground override. */
+  --button-danger-fg-color-hover: var(--base-color-neutral-0);
+  --button-danger-fg-color-rest: var(--fg-color-danger);
+  --button-default-bg-color-active: var(--control-bg-color-active);
+  --button-default-bg-color-hover: var(--control-bg-color-hover);
+  --button-default-bg-color-rest: var(--control-bg-color-rest);
+  --button-default-fg-color-rest: var(--control-fg-color-rest);
+  --button-invisible-bg-color-hover: var(--control-transparent-bg-color-hover);
+  /* Primer transparent color restored after conversion to DTCG. */
+  --button-invisible-bg-color-rest: var(--control-transparent-bg-color-rest);
+  --button-invisible-fg-color-hover: var(--control-fg-color-rest);
+  --button-invisible-fg-color-rest: var(--control-fg-color-rest);
+  --button-primary-bg-color-active: hsl(137.5 65.8% 28.6%);
+  /* Primer dark-dimmed primary button hover background. */
+  --button-primary-bg-color-hover: hsl(137.2 64.3% 30.8%);
+  /* Strong success background for prominent positive actions */
+  --button-primary-bg-color-rest: var(--bg-color-success-emphasis);
+  /* Primer dark-dimmed primary button foreground override. */
+  --button-primary-fg-color-rest: var(--fg-color-white);
+  --control-bg-color-active: var(--base-color-neutral-3);
+  --control-bg-color-disabled: var(--bg-color-disabled);
+  --control-bg-color-hover: var(--base-color-neutral-2);
+  --control-bg-color-rest: var(--base-color-neutral-1);
+  --control-checked-bg-color-rest: var(--bg-color-accent-emphasis);
+  --control-fg-color-disabled: var(--fg-color-disabled);
+  --control-fg-color-rest: var(--base-color-neutral-12);
+  --control-knob-bg-color-checked: var(--base-color-neutral-0);
+  --control-knob-bg-color-rest: var(--base-color-neutral-0);
+  --control-large-size: var(--base-size-40);
+  --control-medium-size: var(--base-size-32);
+  --control-track-bg-color-hover: var(--base-color-neutral-4);
+  --control-track-bg-color-rest: var(--base-color-neutral-3);
+  --control-track-border-color-rest: var(--border-color-default);
+  /* Primer light invisible-control hover background with restored alpha. */
+  --control-transparent-bg-color-hover: hsl(213.9 10% 55.1% / 0.1);
+  /* Primer transparent color restored after conversion to DTCG. */
+  --control-transparent-bg-color-rest: var(--base-color-transparent);
+  --control-xlarge-size: var(--base-size-48);
+  --fg-color-accent: var(--base-color-blue-5);
   --fg-color-attention: var(--base-color-yellow-5);
-  /* Danger text for errors and destructive actions */
   --fg-color-danger: hsl(356.2 70.6% 48%);
-  /* Default text color for primary content and headings */
   --fg-color-default: var(--base-color-neutral-13);
-  /* Text color for disabled interactive elements */
   --fg-color-disabled: var(--base-color-neutral-8);
-  /* Muted text for secondary content and less important information */
   --fg-color-muted: var(--base-color-neutral-9);
-  /* Text color for use on emphasis backgrounds */
   --fg-color-on-emphasis: var(--base-color-neutral-0);
-  /* Success text for positive feedback and completed states */
   --fg-color-success: var(--base-color-green-5);
-  --fgColor-attention: var(--base-color-yellow-5);
-  --fgColor-danger: hsl(356.2 70.6% 48%);
-  --fgColor-default: var(--base-color-neutral-13);
-  --fgColor-disabled: var(--base-color-neutral-8);
-  --fgColor-muted: var(--base-color-neutral-9);
-  --fgColor-onEmphasis: var(--base-color-neutral-0);
-  --fgColor-success: var(--base-color-green-5);
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fg-color-white: var(--base-color-neutral-0);
+  --focus-outline-color: var(--border-color-accent-emphasis);
+  /* Focus outline offset (-2px). Negative value creates an inset outline for keyboard focus indicators, ensuring the focus ring stays within the element bounds */
+  --focus-outline-offset: -2px;
+  /* Focus outline width (2px). Standard width for keyboard focus indicators to meet WCAG 2.4.7 accessibility requirements */
+  --focus-outline-width: 2px;
+  /* Holocomm's system font stack without a bundled webfont. */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-size-2xl: 40px;
-  --font-size-lg: 20px;
-  --font-size-md: 16px;
-  --font-size-sm: 14px;
-  --font-size-xl: 32px;
-  --font-size-xs: 12px;
-  --font-weight-medium: 500;
-  --font-weight-regular: 400;
-  --font-weight-semibold: 600;
-  --layer-modal: 100;
-  --layer-overlay: 80;
-  --layer-tooltip: 300;
+  /* Width of the persistent room navigation rail. */
   --layout-app-navigation: 72px;
+  /* Maximum width of centered dashboard content. */
   --layout-content-max: 1152px;
-  --layout-dialog-max: 440px;
+  /* Width of the media settings dialog between Primer's large and xlarge overlays. */
   --layout-dialog-wide-max: 720px;
+  /* Width of the custom participant-list scrollbar. */
   --layout-scrollbar: 10px;
+  /* Minimum viewport width supported by the application shell. */
   --layout-viewport-min: 320px;
-  --line-height-body: 1.5;
-  --line-height-compact: 1.3;
-  --line-height-relaxed: 1.55;
-  --radius-full: 999px;
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --radius-sm: 6px;
-  --size-control-lg: 48px;
-  --size-control-md: 40px;
-  --size-control-sm: 32px;
-  --size-icon-sm: 16px;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --stroke-default: 1px;
-  --stroke-focus: 2px;
-  --stroke-focus-offset: 2px;
+  --motion-duration-micro: var(--base-duration-100);
+  --motion-duration-short: var(--base-duration-200);
+  /* CSS default easing. Use for hover state changes and micro-interactions. */
+  --motion-easing-hover: var(--base-easing-ease);
+  /* Darkens the page behind a modal in the light theme. */
+  --overlay-backdrop-bg-color: rgb(0% 0% 0% / 0.35);
+  --overlay-bg-color: var(--base-color-neutral-0);
+  --overlay-border-color: var(--border-color-muted);
+  --overlay-width-medium: 480px;
+  --room-connection-online-box-shadow: 0px 0px 0px var(--base-size-12) var(--bg-color-default);
+  --room-participant-speaking-box-shadow: 0px 0px 0px var(--base-size-2) var(--bg-color-muted), 0px 0px 0px var(--base-size-4) var(--border-color-success-emphasis);
+  --shadow-floating-medium: 0px 0px 0px 1px var(--overlay-border-color), 0px 8px 16px -4px rgb(14.118% 16.078% 18.431% / 0.08), 0px 4px 32px -4px rgb(14.118% 16.078% 18.431% / 0.08), 0px 24px 48px -12px rgb(14.118% 16.078% 18.431% / 0.08);
+  --shadow-floating-small: 0px 0px 0px 1px var(--overlay-border-color), 0px 6px 12px -3px rgb(14.118% 16.078% 18.431% / 0.2), 0px 6px 18px 0px rgb(14.118% 16.078% 18.431% / 0.2);
+  /* Primer light resting medium shadow with restored alpha. */
+  --shadow-resting-medium: 0px 1px 1px 0px rgb(14.118% 16.078% 18.431% / 0.12), 0px 3px 6px 0px rgb(14.118% 16.078% 18.431% / 0.12);
+  /* Default choice for body text and general UI content. Provides optimal readability for paragraphs, descriptions, and most multi-line text. Use when unsure which line-height to pick. */
+  --text-body-line-height-medium: var(--base-text-line-height-normal);
+  /* 16px - Large body text and small titles. */
+  --text-body-size-large: var(--base-text-size-md);
+  /* 14px - Default body text size for UI. */
+  --text-body-size-medium: var(--base-text-size-sm);
+  /* 12px - Smallest text size for captions and compact UI elements. */
+  --text-body-size-small: var(--base-text-size-xs);
+  /* 40px - Display text for hero sections. */
+  --text-display-size: var(--base-text-size-2xl);
+  /* 32px - Large titles and page headings. */
+  --text-title-size-large: var(--base-text-size-xl);
+  /* 20px - Medium titles and subtitles. */
+  --text-title-size-medium: var(--base-text-size-lg);
+  /* Dark theme canvas shown inside the theme picker. */
+  --theme-preview-dark-canvas-bg-color: rgb(12.941% 15.686% 18.824%);
+  /* Dark theme navigation shown inside the theme picker. */
+  --theme-preview-dark-navigation-bg-color: rgb(10.588% 12.941% 15.686%);
+  /* Dark theme panel shown inside the theme picker. */
+  --theme-preview-dark-panel-bg-color: rgb(17.647% 20.784% 24.706%);
+  /* Light theme canvas shown inside the theme picker. */
+  --theme-preview-light-canvas-bg-color: rgb(96.471% 97.255% 98.039%);
+  /* Light theme navigation shown inside the theme picker. */
+  --theme-preview-light-navigation-bg-color: rgb(91.765% 93.333% 94.902%);
+  /* Light theme panel shown inside the theme picker. */
+  --theme-preview-light-panel-bg-color: rgb(100% 100% 100%);
+  --tooltip-bg-color: var(--bg-color-emphasis);
+  --tooltip-fg-color: var(--fg-color-on-emphasis);
+  --z-index-modal: var(--base-z-index-400);
+  --z-index-overlay: var(--base-z-index-300);
+  --z-index-popover: var(--base-z-index-500);
 }

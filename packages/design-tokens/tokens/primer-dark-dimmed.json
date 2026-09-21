@@ -1,71 +1,226 @@
 {
   "base": {
     "color": {
-      "blue": {
-        "accent-foreground": {
-          "$value": {
-            "colorSpace": "hsl",
-            "components": [215, 70, 61]
-          },
-          "$type": "color"
-        }
+      "transparent": {
+        "$value": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0 },
+        "$type": "color",
+        "$description": "Primer transparent color restored after conversion to DTCG."
       }
     }
   },
   "bgColor": {
-    "default": { "$value": "{base.color.neutral.3}", "$type": "color" },
-    "muted": { "$value": "{base.color.neutral.4}", "$type": "color" },
-    "inset": { "$value": "{base.color.neutral.2}", "$type": "color" },
-    "disabled": { "$value": "{base.color.neutral.5}", "$type": "color" }
+    "default": { "$value": "{base.color.neutral.3}", "$type": "color", "$description": "Primer dark-dimmed page background." },
+    "muted": { "$value": "{base.color.neutral.4}", "$type": "color", "$description": "Primer dark-dimmed secondary background." },
+    "inset": { "$value": "{base.color.neutral.2}", "$type": "color", "$description": "Primer dark-dimmed inset background." },
+    "emphasis": { "$value": "{base.color.neutral.7}", "$type": "color", "$description": "Primer dark-dimmed emphasis background." },
+    "disabled": { "$value": "{base.color.neutral.5}", "$type": "color", "$description": "Primer dark-dimmed disabled background." },
+    "accent": {
+      "muted": {
+        "$value": { "colorSpace": "hsl", "components": [215.3, 75.1, 57.5], "alpha": 0.1 },
+        "$type": "color",
+        "$description": "Primer dark-dimmed accent-muted background with restored alpha."
+      }
+    },
+    "danger": {
+      "muted": {
+        "$value": { "colorSpace": "hsl", "components": [3.1, 74.8, 59.6], "alpha": 0.1 },
+        "$type": "color",
+        "$description": "Primer dark-dimmed danger-muted background with restored alpha."
+      }
+    }
   },
   "borderColor": {
-    "default": { "$value": "{base.color.neutral.7}", "$type": "color" },
+    "default": { "$value": "{base.color.neutral.7}", "$type": "color", "$description": "Primer dark-dimmed default border." },
     "accent": {
-      "emphasis": { "$value": "{base.color.blue.3}", "$type": "color" }
+      "emphasis": { "$value": "{base.color.blue.3}", "$type": "color", "$description": "Primer dark-dimmed accent border." }
     }
   },
   "control": {
     "bgColor": {
-      "rest": { "$value": "{base.color.neutral.5}", "$type": "color" },
-      "hover": { "$value": "{base.color.neutral.6}", "$type": "color" }
+      "rest": { "$value": "{base.color.neutral.5}", "$type": "color", "$description": "Primer dark-dimmed control background." },
+      "hover": { "$value": "{base.color.neutral.6}", "$type": "color", "$description": "Primer dark-dimmed control hover background." },
+      "active": { "$value": "{base.color.neutral.7}", "$type": "color", "$description": "Primer dark-dimmed control active background." }
+    },
+    "transparent": {
+      "bgColor": {
+        "rest": { "$value": "{base.color.transparent}", "$type": "color", "$description": "Primer dark-dimmed invisible-control background." },
+        "hover": {
+          "$value": { "colorSpace": "hsl", "components": [215.3, 7.8, 42.9], "alpha": 0.15 },
+          "$type": "color",
+          "$description": "Primer dark-dimmed invisible-control hover background with restored alpha."
+        },
+        "active": {
+          "$value": { "colorSpace": "hsl", "components": [215.3, 7.8, 42.9], "alpha": 0.2 },
+          "$type": "color",
+          "$description": "Primer dark-dimmed invisible-control active background with restored alpha."
+        }
+      }
+    }
+  },
+  "controlTrack": {
+    "bgColor": {
+      "rest": { "$value": "{base.color.neutral.2}", "$type": "color", "$description": "Primer dark-dimmed toggle track background." },
+      "hover": { "$value": "{base.color.neutral.3}", "$type": "color", "$description": "Subtle dark-dimmed toggle hover, one step above the resting track." }
+    },
+    "borderColor": {
+      "rest": { "$value": "{base.color.neutral.7}", "$type": "color", "$description": "Primer dark-dimmed toggle track border." }
+    }
+  },
+  "controlKnob": {
+    "bgColor": {
+      "rest": { "$value": "{base.color.neutral.5}", "$type": "color", "$description": "Primer dark-dimmed toggle knob background." },
+      "checked": { "$value": "{base.color.neutral.13}", "$type": "color", "$description": "Primer dark-dimmed checked toggle knob background." }
     }
   },
   "fgColor": {
-    "default": { "$value": "{base.color.neutral.11}", "$type": "color" },
-    "onEmphasis": { "$value": "{base.color.neutral.12}", "$type": "color" },
-    "disabled": { "$value": "{base.color.neutral.8}", "$type": "color" },
-    "success": { "$value": "{base.color.green.3}", "$type": "color" },
-    "attention": { "$value": "{base.color.yellow.2}", "$type": "color" },
-    "danger": { "$value": "{base.color.red.3}", "$type": "color" }
+    "default": { "$value": "{base.color.neutral.11}", "$type": "color", "$description": "Primer dark-dimmed default foreground." },
+    "onEmphasis": { "$value": "{base.color.neutral.12}", "$type": "color", "$description": "Primer dark-dimmed on-emphasis foreground." },
+    "disabled": { "$value": "{base.color.neutral.8}", "$type": "color", "$description": "Primer dark-dimmed disabled foreground." },
+    "accent": { "$value": "{base.color.blue.3}", "$type": "color", "$description": "Primer dark-dimmed accent foreground." },
+    "success": { "$value": "{base.color.green.3}", "$type": "color", "$description": "Primer dark-dimmed success foreground." },
+    "attention": { "$value": "{base.color.yellow.2}", "$type": "color", "$description": "Primer dark-dimmed attention foreground." },
+    "danger": { "$value": "{base.color.red.3}", "$type": "color", "$description": "Primer dark-dimmed danger foreground." }
   },
-  "color": {
-    "tooltip": {
-      "background": { "$value": "{base.color.neutral.7}", "$type": "color" }
-    },
-    "content": {
-      "accent": {
-        "$value": "{base.color.blue.accent-foreground}",
-        "$type": "color"
+  "overlay": {
+    "bgColor": { "$value": "{base.color.neutral.5}", "$type": "color", "$description": "Primer dark-dimmed overlay background." },
+    "backdrop": {
+      "bgColor": {
+        "$value": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.55 },
+        "$type": "color",
+        "$description": "Darkens the page behind a modal in the dark-dimmed theme."
       }
-    },
-    "accent": {
-      "hover": {
-        "$value": {
-          "colorSpace": "hsl",
-          "components": [215.5, 68, 49]
-        },
-        "$type": "color"
-      }
-    },
-    "action": {
-      "danger": {
-        "background-hover": {
-          "$value": {
-            "colorSpace": "hsl",
-            "components": [2, 65, 50]
-          },
-          "$type": "color"
+    }
+  },
+  "button": {
+    "primary": {
+      "fgColor": {
+        "rest": {
+          "$value": { "colorSpace": "hsl", "components": [0, 0, 100] },
+          "$type": "color",
+          "$description": "Primer dark-dimmed primary button foreground override."
         }
+      },
+      "bgColor": {
+        "hover": {
+          "$value": { "colorSpace": "hsl", "components": [124, 38.9, 37.8] },
+          "$type": "color",
+          "$description": "Primer dark-dimmed primary button hover background."
+        },
+        "active": {
+          "$value": "{base.color.green.5}",
+          "$type": "color",
+          "$description": "Darker Primer green keeps the primary button label readable at normal text size when active."
+        }
+      }
+    },
+    "danger": {
+      "fgColor": {
+        "rest": {
+          "$value": "{fgColor.danger}",
+          "$type": "color",
+          "$description": "Primer semantic danger text keeps the destructive button label readable at normal text size."
+        },
+        "hover": {
+          "$value": { "colorSpace": "hsl", "components": [0, 0, 100] },
+          "$type": "color",
+          "$description": "Primer dark-dimmed danger button hover foreground override."
+        },
+        "active": {
+          "$value": { "colorSpace": "hsl", "components": [0, 0, 100] },
+          "$type": "color",
+          "$description": "Primer dark-dimmed danger button active foreground override."
+        }
+      },
+      "bgColor": {
+        "hover": { "$value": "{base.color.red.6}", "$type": "color", "$description": "Primer dark-dimmed danger button hover background." },
+        "active": { "$value": "{bgColor.danger.emphasis}", "$type": "color", "$description": "Primer dark-dimmed danger button active background." }
+      }
+    }
+  },
+  "shadow": {
+    "resting": {
+      "medium": {
+        "$value": [
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.4 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 1, "unit": "px" },
+            "blur": { "value": 1, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.8 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 3, "unit": "px" },
+            "blur": { "value": 6, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          }
+        ],
+        "$type": "shadow",
+        "$description": "Primer dark-dimmed resting medium shadow with restored alpha."
+      }
+    },
+    "floating": {
+      "small": {
+        "$value": [
+          {
+            "color": "{overlay.borderColor}",
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 0, "unit": "px" },
+            "blur": { "value": 0, "unit": "px" },
+            "spread": { "value": 1, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.4 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 6, "unit": "px" },
+            "blur": { "value": 12, "unit": "px" },
+            "spread": { "value": -3, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.4 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 6, "unit": "px" },
+            "blur": { "value": 18, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          }
+        ],
+        "$type": "shadow",
+        "$description": "Primer dark-dimmed floating small shadow with restored alpha."
+      },
+      "medium": {
+        "$value": [
+          {
+            "color": "{overlay.borderColor}",
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 0, "unit": "px" },
+            "blur": { "value": 0, "unit": "px" },
+            "spread": { "value": 1, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.4 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 8, "unit": "px" },
+            "blur": { "value": 16, "unit": "px" },
+            "spread": { "value": -4, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.4 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 4, "unit": "px" },
+            "blur": { "value": 32, "unit": "px" },
+            "spread": { "value": -4, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.4 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 24, "unit": "px" },
+            "blur": { "value": 48, "unit": "px" },
+            "spread": { "value": -12, "unit": "px" }
+          }
+        ],
+        "$type": "shadow",
+        "$description": "Primer dark-dimmed floating medium shadow with restored alpha."
       }
     }
   }

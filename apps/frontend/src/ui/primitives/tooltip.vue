@@ -35,18 +35,18 @@ withDefaults(
 
 <style>
 .app-tooltip {
-  z-index: var(--layer-tooltip);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2) var(--space-3);
-  color: var(--color-tooltip-foreground);
-  background: var(--color-tooltip-background);
-  box-shadow: 0 var(--space-2) var(--space-6) var(--color-shadow);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-compact);
+  z-index: var(--z-index-popover);
+  border-radius: var(--border-radius-medium);
+  padding: var(--base-size-8) var(--base-size-12);
+  color: var(--tooltip-fg-color);
+  background: var(--tooltip-bg-color);
+  box-shadow: var(--shadow-floating-small);
+  font-size: var(--text-body-size-medium);
+  line-height: var(--base-text-line-height-tight);
   white-space: nowrap;
 }
 
 .app-tooltip__arrow {
-  fill: var(--color-tooltip-background);
+  fill: var(--tooltip-bg-color);
 }
 </style>

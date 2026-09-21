@@ -212,43 +212,43 @@ function save(): void {
 <style scoped>
 .media-settings {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--base-size-16);
 }
 
 fieldset {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--base-size-16);
   margin: 0;
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  background: color-mix(in srgb, var(--color-surface-elevated) 45%, transparent);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-default);
+  padding: var(--base-size-16);
+  background: var(--bg-color-muted);
 }
 
 legend {
-  padding-inline: var(--space-2);
-  color: var(--color-content-primary);
-  font-weight: var(--font-weight-semibold);
+  padding-inline: var(--base-size-8);
+  color: var(--fg-color-default);
+  font-weight: var(--base-text-weight-semibold);
 }
 
 label {
   display: grid;
-  gap: var(--space-2);
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-sm);
+  gap: var(--base-size-8);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-medium);
 }
 
 p {
   margin: 0;
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-body);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-small);
+  line-height: var(--text-body-line-height-medium);
 }
 
 .media-settings__processing {
   display: grid;
-  gap: var(--space-4);
-  border-top: var(--stroke-default) solid var(--color-border-default);
-  padding-top: var(--space-4);
+  gap: var(--base-size-16);
+  border-top: var(--border-width-thin) solid var(--border-color-default);
+  padding-top: var(--base-size-16);
 }
 </style>

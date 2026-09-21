@@ -61,11 +61,11 @@ function submit(): void {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(20rem, 26rem);
   align-items: center;
-  width: min(100% - var(--space-8), var(--layout-content-max));
+  width: min(100% - var(--base-size-32), var(--layout-content-max));
   min-height: 100vh;
-  gap: var(--space-12);
+  gap: var(--base-size-48);
   margin-inline: auto;
-  padding-block: var(--space-10);
+  padding-block: var(--base-size-40);
 }
 
 .onboarding__intro {
@@ -81,15 +81,15 @@ function submit(): void {
 
 .eyebrow,
 .profile-card__label {
-  color: var(--color-content-accent);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  color: var(--fg-color-accent);
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 h1 {
-  margin: var(--space-3) 0 var(--space-5);
+  margin: var(--base-size-12) 0 var(--base-size-20);
   max-width: 44rem;
   font-size: clamp(3rem, 5.5vw, 4.75rem);
   line-height: 1;
@@ -99,29 +99,29 @@ h1 {
 
 .onboarding__intro > p:last-child {
   max-width: 34rem;
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-lg);
-  line-height: var(--line-height-relaxed);
+  color: var(--fg-color-muted);
+  font-size: var(--text-title-size-medium);
+  line-height: var(--base-text-line-height-relaxed);
 }
 
 .profile-card {
   display: grid;
-  gap: var(--space-4);
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  background: var(--color-surface-panel);
-  box-shadow: 0 var(--space-4) var(--space-12) var(--color-shadow);
+  gap: var(--base-size-16);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-large);
+  padding: var(--base-size-24);
+  background: var(--bg-color-muted);
+  box-shadow: var(--shadow-resting-medium);
 }
 
 h2 {
-  margin: var(--space-1) 0 0;
-  font-size: var(--font-size-xl);
+  margin: var(--base-size-4) 0 0;
+  font-size: var(--text-title-size-large);
 }
 
 .privacy-note {
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-sm);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-medium);
   text-align: center;
 }
 
@@ -129,9 +129,9 @@ h2 {
   .onboarding {
     grid-template-columns: 1fr;
     align-content: center;
-    width: min(100% - var(--space-8), 36rem);
-    gap: var(--space-6);
-    padding-block: var(--space-8);
+    width: min(100% - var(--base-size-32), 36rem);
+    gap: var(--base-size-24);
+    padding-block: var(--base-size-32);
   }
 
   .onboarding__intro {
@@ -149,12 +149,12 @@ h2 {
 
 @media (max-width: 32rem) {
   .onboarding {
-    width: min(100% - var(--space-6), 36rem);
-    padding-block: var(--space-6);
+    width: min(100% - var(--base-size-24), 36rem);
+    padding-block: var(--base-size-24);
   }
 
   .profile-card {
-    padding: var(--space-5);
+    padding: var(--base-size-20);
   }
 }
 </style>

@@ -1,8 +1,8 @@
 :root {
   font-family: var(--font-sans);
-  line-height: var(--line-height-body);
-  color: var(--color-content-primary);
-  background: var(--color-surface-canvas);
+  line-height: var(--text-body-line-height-medium);
+  color: var(--fg-color-default);
+  background: var(--bg-color-default);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -18,8 +18,40 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
+}
+
+:where(
+  a[href],
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  audio[controls],
+  video[controls],
+  [contenteditable='true'],
+  [tabindex]:not([tabindex='-1']),
+  [role='button'],
+  [role='checkbox'],
+  [role='combobox'],
+  [role='link'],
+  [role='menuitem'],
+  [role='menuitemcheckbox'],
+  [role='menuitemradio'],
+  [role='option'],
+  [role='radio'],
+  [role='slider'],
+  [role='spinbutton'],
+  [role='switch'],
+  [role='tab'],
+  [role='treeitem']
+):focus-visible {
+  outline: var(--focus-outline-width) solid var(--focus-outline-color);
+  outline-offset: var(--focus-outline-offset);
 }
 
 @media (prefers-reduced-motion: reduce) {

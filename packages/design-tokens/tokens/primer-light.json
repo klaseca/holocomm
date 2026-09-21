@@ -1,12 +1,128 @@
 {
-  "bgColor": {
-    "inset": { "$value": "{base.color.neutral.2}", "$type": "color" },
-    "disabled": { "$value": "{base.color.neutral.2}", "$type": "color" }
+  "base": {
+    "color": {
+      "transparent": {
+        "$value": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0 },
+        "$type": "color",
+        "$description": "Primer transparent color restored after conversion to DTCG."
+      }
+    }
   },
   "control": {
-    "bgColor": {
-      "rest": { "$value": "{base.color.neutral.2}", "$type": "color" },
-      "hover": { "$value": "{base.color.neutral.3}", "$type": "color" }
+    "transparent": {
+      "bgColor": {
+        "rest": {
+          "$value": "{base.color.transparent}",
+          "$type": "color",
+          "$description": "Primer light invisible-control resting background."
+        },
+        "hover": {
+          "$value": { "colorSpace": "hsl", "components": [213.9, 10, 55.1], "alpha": 0.1 },
+          "$type": "color",
+          "$description": "Primer light invisible-control hover background with restored alpha."
+        },
+        "active": {
+          "$value": { "colorSpace": "hsl", "components": [213.9, 10, 55.1], "alpha": 0.15 },
+          "$type": "color",
+          "$description": "Primer light invisible-control active background with restored alpha."
+        }
+      }
+    }
+  },
+  "overlay": {
+    "backdrop": {
+      "bgColor": {
+        "$value": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.35 },
+        "$type": "color",
+        "$description": "Darkens the page behind a modal in the light theme."
+      }
+    }
+  },
+  "shadow": {
+    "resting": {
+      "medium": {
+        "$value": [
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.12 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 1, "unit": "px" },
+            "blur": { "value": 1, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.12 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 3, "unit": "px" },
+            "blur": { "value": 6, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          }
+        ],
+        "$type": "shadow",
+        "$description": "Primer light resting medium shadow with restored alpha."
+      }
+    },
+    "floating": {
+      "small": {
+        "$value": [
+          {
+            "color": "{overlay.borderColor}",
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 0, "unit": "px" },
+            "blur": { "value": 0, "unit": "px" },
+            "spread": { "value": 1, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.2 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 6, "unit": "px" },
+            "blur": { "value": 12, "unit": "px" },
+            "spread": { "value": -3, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.2 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 6, "unit": "px" },
+            "blur": { "value": 18, "unit": "px" },
+            "spread": { "value": 0, "unit": "px" }
+          }
+        ],
+        "$type": "shadow",
+        "$description": "Primer light floating small shadow with restored alpha."
+      },
+      "medium": {
+        "$value": [
+          {
+            "color": "{overlay.borderColor}",
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 0, "unit": "px" },
+            "blur": { "value": 0, "unit": "px" },
+            "spread": { "value": 1, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.08 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 8, "unit": "px" },
+            "blur": { "value": 16, "unit": "px" },
+            "spread": { "value": -4, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.08 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 4, "unit": "px" },
+            "blur": { "value": 32, "unit": "px" },
+            "spread": { "value": -4, "unit": "px" }
+          },
+          {
+            "color": { "colorSpace": "srgb", "components": [0.141176, 0.160784, 0.184314], "alpha": 0.08 },
+            "offsetX": { "value": 0, "unit": "px" },
+            "offsetY": { "value": 24, "unit": "px" },
+            "blur": { "value": 48, "unit": "px" },
+            "spread": { "value": -12, "unit": "px" }
+          }
+        ],
+        "$type": "shadow",
+        "$description": "Primer light floating medium shadow with restored alpha."
+      }
     }
   }
 }

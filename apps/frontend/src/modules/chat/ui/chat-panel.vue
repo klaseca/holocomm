@@ -40,7 +40,12 @@ function formatTime(timestamp: number): string {
 
 <template>
   <section class="chat" aria-label="Live chat">
-    <div class="chat__messages" tabindex="0">
+    <div
+      class="chat__messages"
+      role="region"
+      aria-label="Chat messages"
+      tabindex="0"
+    >
       <p v-if="messages.length === 0" class="chat__empty">
         Nothing here yet. Messages appear only while you are in the room.
       </p>
@@ -82,8 +87,8 @@ function formatTime(timestamp: number): string {
   grid-template-rows: minmax(0, 1fr) auto;
   min-height: 0;
   overflow: hidden;
-  border-top: var(--stroke-default) solid var(--color-border-default);
-  background: var(--color-surface-canvas);
+  border-top: var(--border-width-thin) solid var(--border-color-default);
+  background: var(--bg-color-default);
 }
 
 .chat__composer,
@@ -98,8 +103,8 @@ function formatTime(timestamp: number): string {
 }
 
 time {
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-sm);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-medium);
 }
 
 .chat__messages {
@@ -110,8 +115,8 @@ time {
 }
 
 .chat__empty {
-  padding: var(--space-5);
-  color: var(--color-content-secondary);
+  padding: var(--base-size-20);
+  color: var(--fg-color-muted);
   text-align: center;
 }
 
@@ -119,38 +124,38 @@ time {
   display: grid;
   gap: 0;
   margin: 0;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--base-size-12) var(--base-size-16);
   list-style: none;
 }
 
 .message {
   display: grid;
-  gap: var(--space-1);
-  border-radius: var(--radius-sm);
-  padding: var(--space-1) var(--space-3);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  gap: var(--base-size-4);
+  border-radius: var(--border-radius-medium);
+  padding: var(--base-size-4) var(--base-size-12);
+  transition: background-color var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .message:hover {
-  background: var(--color-surface-panel);
+  background: var(--bg-color-muted);
 }
 
 .message__meta {
-  gap: var(--space-2);
+  gap: var(--base-size-8);
 }
 
 .message--self strong {
-  color: var(--color-content-accent);
+  color: var(--fg-color-accent);
 }
 
 .message p {
   overflow-wrap: anywhere;
-  line-height: var(--line-height-body);
+  line-height: var(--text-body-line-height-medium);
 }
 
 .chat__composer {
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4) var(--space-4);
+  gap: var(--base-size-8);
+  padding: var(--base-size-12) var(--base-size-16) var(--base-size-16);
 }
 
 .chat__composer > :first-child {

@@ -38,7 +38,7 @@ const sliderValue = computed<number[]>({
   position: relative;
   display: flex;
   width: 100%;
-  height: var(--size-control-sm);
+  height: var(--control-medium-size);
   align-items: center;
   touch-action: none;
   user-select: none;
@@ -46,35 +46,30 @@ const sliderValue = computed<number[]>({
 
 .app-slider__track {
   position: relative;
-  height: var(--space-1);
+  height: var(--base-size-4);
   flex: 1;
   overflow: hidden;
-  border-radius: var(--radius-full);
-  background: var(--color-surface-inset);
+  border-radius: var(--border-radius-full);
+  background: var(--bg-color-inset);
 }
 
 .app-slider__range {
   position: absolute;
   height: 100%;
-  background: var(--color-accent-emphasis);
+  background: var(--bg-color-accent-emphasis);
 }
 
 .app-slider__thumb {
   display: block;
-  width: var(--space-4);
-  height: var(--space-4);
-  border: var(--stroke-default) solid var(--color-border-strong);
-  border-radius: var(--radius-full);
-  background: var(--color-content-primary);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
+  border: var(--border-width-thin) solid var(--border-color-emphasis);
+  border-radius: var(--border-radius-full);
+  background: var(--fg-color-default);
   cursor: grab;
 }
 
 .app-slider__thumb:active {
   cursor: grabbing;
-}
-
-.app-slider__thumb:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
 }
 </style>

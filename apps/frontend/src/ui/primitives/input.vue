@@ -35,36 +35,30 @@ const inputId = typeof attrs.id === 'string' ? attrs.id : generatedId
 <style scoped>
 .field {
   display: grid;
-  gap: var(--space-2);
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  gap: var(--base-size-8);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-medium);
 }
 
 .field__control {
   box-sizing: border-box;
   width: 100%;
-  min-height: var(--size-control-md);
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-md);
-  padding-inline: var(--space-3);
-  color: var(--color-content-primary);
-  background: var(--color-surface-inset);
+  min-height: var(--control-large-size);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-default);
+  padding-inline: var(--base-size-12);
+  color: var(--fg-color-default);
+  background: var(--bg-color-default);
   font: inherit;
-  transition: border-color var(--duration-fast) var(--ease-out);
+  transition: border-color var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .field__control::placeholder {
-  color: var(--color-content-secondary);
-}
-
-.field__control:focus-visible {
-  border-color: var(--color-focus);
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
+  color: var(--fg-color-muted);
 }
 
 .field__error {
-  color: var(--color-status-danger);
+  color: var(--fg-color-danger);
 }
 </style>

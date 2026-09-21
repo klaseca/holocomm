@@ -6,11 +6,19 @@ import {
   ScrollAreaThumb,
   ScrollAreaViewport,
 } from 'reka-ui'
+
+defineProps<{
+  accessibleLabel: string
+}>()
 </script>
 
 <template>
   <ScrollAreaRoot class="scroll-area" type="auto">
-    <ScrollAreaViewport class="scroll-area__viewport">
+    <ScrollAreaViewport
+      class="scroll-area__viewport"
+      role="region"
+      :aria-label="accessibleLabel"
+    >
       <slot />
     </ScrollAreaViewport>
     <ScrollAreaScrollbar class="scroll-area__scrollbar" orientation="vertical">
@@ -38,8 +46,8 @@ import {
 .scroll-area__scrollbar {
   display: flex;
   width: var(--layout-scrollbar);
-  padding: var(--space-1);
-  background: var(--color-surface-inset);
+  padding: var(--base-size-4);
+  background: var(--bg-color-inset);
   touch-action: none;
   user-select: none;
 }
@@ -47,7 +55,7 @@ import {
 .scroll-area__thumb {
   position: relative;
   flex: 1;
-  border-radius: var(--radius-full);
-  background: var(--color-border-strong);
+  border-radius: var(--border-radius-full);
+  background: var(--border-color-emphasis);
 }
 </style>

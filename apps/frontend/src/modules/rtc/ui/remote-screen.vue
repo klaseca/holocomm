@@ -27,7 +27,15 @@ onBeforeUnmount(() => {
 
 <template>
   <figure class="remote-screen">
-    <video ref="video" autoplay controls :muted="muted" playsinline :volume="volume" />
+    <video
+      ref="video"
+      :aria-label="label"
+      autoplay
+      controls
+      :muted="muted"
+      playsinline
+      :volume="volume"
+    />
     <figcaption>{{ label }}</figcaption>
   </figure>
 </template>
@@ -42,9 +50,9 @@ onBeforeUnmount(() => {
   min-height: 0;
   margin: 0;
   overflow: hidden;
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-panel);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-large);
+  background: var(--bg-color-muted);
 }
 
 video {
@@ -52,18 +60,18 @@ video {
   width: 100%;
   height: 100%;
   min-height: 0;
-  background: var(--color-surface-inset);
+  background: var(--bg-color-inset);
   object-fit: contain;
 }
 
 figcaption {
   position: absolute;
-  right: var(--space-3);
-  bottom: var(--space-3);
-  border-radius: var(--radius-md);
-  padding: var(--space-1) var(--space-2);
-  background: var(--color-surface-elevated);
-  color: var(--color-content-primary);
-  font-size: var(--font-size-sm);
+  right: var(--base-size-12);
+  bottom: var(--base-size-12);
+  border-radius: var(--border-radius-default);
+  padding: var(--base-size-4) var(--base-size-8);
+  background: var(--overlay-bg-color);
+  color: var(--fg-color-default);
+  font-size: var(--text-body-size-medium);
 }
 </style>

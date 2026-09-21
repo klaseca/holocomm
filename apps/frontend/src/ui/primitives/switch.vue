@@ -27,66 +27,66 @@ const id = useId()
 <style scoped>
 .switch-field {
   display: flex;
-  min-height: var(--size-control-md);
+  min-height: var(--control-large-size);
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--base-size-16);
 }
 
 .switch-field__copy {
   display: grid;
-  gap: var(--space-1);
+  gap: var(--base-size-4);
 }
 
 .switch-field__copy label {
-  color: var(--color-content-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  color: var(--fg-color-default);
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-semibold);
   cursor: pointer;
 }
 
 .switch-field__copy small {
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-body);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-small);
+  line-height: var(--text-body-line-height-medium);
 }
 
 .switch-field__control {
   display: flex;
-  width: calc(var(--space-10) + var(--space-1));
-  height: var(--space-6);
+  width: calc(var(--base-size-40) + var(--base-size-4));
+  height: var(--base-size-24);
   flex: none;
   align-items: center;
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-full);
-  padding: var(--space-1);
-  background: var(--color-surface-inset);
+  border: var(--border-width-thin) solid var(--control-track-border-color-rest);
+  border-radius: var(--border-radius-full);
+  padding: var(--base-size-4);
+  background: var(--control-track-bg-color-rest);
   cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--motion-duration-micro) var(--motion-easing-hover);
+}
+
+.switch-field__control:hover:not([data-state='checked']) {
+  background: var(--control-track-bg-color-hover);
 }
 
 .switch-field__control[data-state='checked'] {
-  border-color: var(--color-accent-emphasis);
-  background: var(--color-accent-emphasis);
-}
-
-.switch-field__control:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
+  border-color: var(--control-checked-bg-color-rest);
+  background: var(--control-checked-bg-color-rest);
 }
 
 .switch-field__thumb {
   display: block;
-  width: var(--space-4);
-  height: var(--space-4);
-  border-radius: var(--radius-full);
-  background: var(--color-control-thumb);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
+  border-radius: var(--border-radius-full);
+  background: var(--control-knob-bg-color-rest);
   transform: translateX(0);
-  transition: transform var(--duration-fast) var(--ease-out);
+  transition: transform var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .switch-field__thumb[data-state='checked'] {
-  transform: translateX(calc(var(--space-4) + var(--space-1)));
+  background: var(--control-knob-bg-color-checked);
+  transform: translateX(calc(var(--base-size-16) + var(--base-size-4)));
 }
 
 @media (prefers-reduced-motion: reduce) {

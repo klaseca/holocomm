@@ -3,46 +3,14 @@ import { readdir, readFile } from 'node:fs/promises'
 import { describe, expect, test } from 'vitest'
 
 describe('generated design tokens', () => {
-  test('exposes the semantic CSS variables used by application UI', async () => {
+  test('resolves token references separately in each theme', async () => {
     const css = await readFile(new URL('./generated/tokens.css', import.meta.url), 'utf8')
 
-    expect(css).toContain('--color-surface-canvas:')
-    expect(css).toContain('--color-content-primary:')
-    expect(css).toContain('--color-action-primary-background-hover:')
-    expect(css).toContain('--color-presence-speaking:')
-    expect(css).toContain('--color-media-sharing:')
-    expect(css).toContain('--space-4:')
-    expect(css).toContain('--size-icon-sm:')
-    expect(css).toContain('--radius-md:')
-    expect(css).toContain('--duration-fast:')
-  })
+    for (const [theme, themeCss] of themeStyles(css)) {
+      const definitions = parseVariables(themeCss)
 
-  test('builds Holocomm semantics on the Primer dark-dimmed and light palettes', async () => {
-    const css = await readFile(new URL('./generated/tokens.css', import.meta.url), 'utf8')
-
-    const [darkCss, lightCss] = splitThemeCss(css)
-
-    expect(css).toContain(':root {\n  color-scheme: dark;')
-    expect(css).toContain('[data-color-scheme=\'light\'] {\n  color-scheme: light;')
-    expect(css).toContain('--color-surface-canvas: var(--bgColor-default);')
-    expect(darkCss).toContain('--bgColor-default: var(--base-color-neutral-3);')
-    expect(darkCss).toContain('--bgColor-muted: var(--base-color-neutral-4);')
-    expect(darkCss).toContain('--control-bgColor-rest: var(--base-color-neutral-5);')
-    expect(darkCss).toContain('--base-color-neutral-0: var(--base-color-black);')
-    expect(lightCss).toContain('--bgColor-default: var(--base-color-neutral-0);')
-    expect(lightCss).toContain('--base-color-neutral-0: var(--base-color-white);')
-  })
-
-  test('does not emit references to missing CSS variables', async () => {
-    const css = await readFile(new URL('./generated/tokens.css', import.meta.url), 'utf8')
-
-    const definitions = new Set([...css.matchAll(/^\s*(--[\w-]+):/gm)].map(match => match[1]))
-
-    const missingReferences = [
-      ...new Set([...css.matchAll(/var\((--[\w-]+)\)/g)].map(match => match[1])),
-    ].filter(variable => !definitions.has(variable))
-
-    expect(missingReferences).toEqual([])
+      expect(missingReferences(themeCss, definitions), theme).toEqual([])
+    }
   })
 
   test('provides every design token referenced by frontend styles', async () => {
@@ -52,65 +20,72 @@ describe('generated design tokens', () => {
       new URL('../../apps/frontend/src/', import.meta.url),
     )
 
-    const definitions = new Set(
-      [...`${css}\n${frontendStyles}`.matchAll(/^\s*(--[\w-]+):/gm)].map(match => match[1]),
-    )
+    for (const [theme, themeCss] of themeStyles(css)) {
+      const definitions = new Map([
+        ...parseVariables(themeCss),
+        ...parseVariables(frontendStyles),
+      ])
 
-    const missingReferences = [
-      ...new Set([...frontendStyles.matchAll(/var\((--[\w-]+)/g)].map(match => match[1]!)),
-    ].filter(variable => !definitions.has(variable) && !variable.startsWith('--reka-'))
-
-    expect(missingReferences).toEqual([])
+      expect(
+        missingReferences(frontendStyles, definitions)
+          .filter(name => !name.startsWith('--reka-')),
+        theme,
+      ).toEqual([])
+    }
   })
 
-  test('does not expose superseded ambiguous semantics or unused palette families', async () => {
+  test('keeps stateful actions discernible and semantic text at AA contrast', async () => {
     const css = await readFile(new URL('./generated/tokens.css', import.meta.url), 'utf8')
-
-    expect(css).not.toMatch(/--color-(?:interactive|text|voice)-/)
-    expect(css).not.toMatch(/--base-color-(?:coral|orange|pink|purple)-/)
-  })
-
-  test('keeps text actions and semantic foregrounds at WCAG AA contrast in both themes', async () => {
-    const css = await readFile(new URL('./generated/tokens.css', import.meta.url), 'utf8')
-
-    const [darkCss, lightCss] = splitThemeCss(css)
 
     const pairs = [
-      ['--color-action-primary-foreground', '--color-action-primary-background-rest'],
-      ['--color-action-primary-foreground', '--color-action-primary-background-hover'],
-      ['--color-action-primary-foreground', '--color-action-primary-background-active'],
-      ['--color-action-danger-foreground', '--color-action-danger-background-rest'],
-      ['--color-action-danger-foreground', '--color-action-danger-background-hover'],
-      ['--color-action-danger-foreground', '--color-action-danger-background-active'],
-      ['--color-content-accent', '--color-surface-canvas'],
-      ['--color-status-success', '--color-surface-canvas'],
-      ['--color-status-warning', '--color-surface-canvas'],
-      ['--color-status-danger', '--color-surface-canvas'],
-      ['--color-tooltip-foreground', '--color-tooltip-background'],
+      ['--button-primary-fg-color-rest', '--button-primary-bg-color-rest', 4.5],
+      ['--button-primary-fg-color-rest', '--button-primary-bg-color-hover', 4.5],
+      ['--button-primary-fg-color-rest', '--button-primary-bg-color-active', 4.5],
+      ['--button-danger-fg-color-rest', '--button-danger-bg-color-rest', 4.5],
+      ['--button-danger-fg-color-hover', '--button-danger-bg-color-hover', 4.5],
+      ['--button-danger-fg-color-active', '--button-danger-bg-color-active', 4.5],
+      ['--fg-color-accent', '--bg-color-default', 4.5],
+      ['--fg-color-success', '--bg-color-default', 4.5],
+      ['--fg-color-attention', '--bg-color-default', 4.5],
+      ['--fg-color-danger', '--bg-color-default', 4.5],
+      ['--tooltip-fg-color', '--tooltip-bg-color', 4.5],
+      ['--focus-outline-color', '--bg-color-default', 3],
+      ['--focus-outline-color', '--bg-color-muted', 3],
+      ['--focus-outline-color', '--overlay-bg-color', 3],
+      ['--focus-outline-color', '--control-bg-color-rest', 3],
     ] as const
 
-    for (const themeCss of [darkCss, lightCss]) {
+    const violations: string[] = []
+
+    for (const [theme, themeCss] of themeStyles(css)) {
       const variables = parseVariables(themeCss)
 
-      for (const [foreground, background] of pairs) {
-        expect(
-          contrast(resolveColor(foreground, variables), resolveColor(background, variables)),
-        ).toBeGreaterThanOrEqual(4.5)
+      for (const [foreground, background, minimum] of pairs) {
+        const ratio = contrast(
+          resolveColor(foreground, variables),
+          resolveColor(background, variables),
+        )
+
+        if (ratio < minimum) {
+          violations.push(`${theme}: ${foreground} on ${background}: ${ratio.toFixed(2)} < ${minimum}`)
+        }
       }
     }
+
+    expect(violations).toEqual([])
   })
 })
 
 type Rgb = readonly [number, number, number]
 
-function splitThemeCss(css: string): readonly [string, string] {
+function themeStyles(css: string): readonly [readonly [string, string], readonly [string, string]] {
   const [darkCss, lightCss] = css.split('[data-color-scheme=\'light\']')
 
-  if (darkCss === undefined || lightCss === undefined) {
+  if (!darkCss?.includes('color-scheme: dark;') || !lightCss?.includes('color-scheme: light;')) {
     throw new Error('Expected generated CSS to contain dark and light themes')
   }
 
-  return [darkCss, lightCss]
+  return [['dark', darkCss], ['light', lightCss]]
 }
 
 function parseVariables(css: string): ReadonlyMap<string, string> {
@@ -119,6 +94,11 @@ function parseVariables(css: string): ReadonlyMap<string, string> {
       match => [match[1]!, match[2]!.trim()] as const,
     ),
   )
+}
+
+function missingReferences(css: string, definitions: ReadonlyMap<string, string>): string[] {
+  return [...new Set([...css.matchAll(/var\((--[\w-]+)/g)].map(match => match[1]!))]
+    .filter(name => !definitions.has(name))
 }
 
 async function readStyleSources(directory: URL): Promise<string> {
@@ -157,11 +137,17 @@ function resolveColor(name: string, variables: ReadonlyMap<string, string>): Rgb
 
   const hsl = /^hsl\(([\d.]+) ([\d.]+)% ([\d.]+)%\)$/.exec(value)
 
-  if (hsl === null) {
-    throw new Error(`Unsupported CSS color for ${name}: ${value}`)
+  if (hsl !== null) {
+    return hslToRgb(Number(hsl[1]), Number(hsl[2]), Number(hsl[3]))
   }
 
-  return hslToRgb(Number(hsl[1]), Number(hsl[2]), Number(hsl[3]))
+  const rgb = /^rgb\(([\d.]+)% ([\d.]+)% ([\d.]+)%\)$/.exec(value)
+
+  if (rgb !== null) {
+    return [Number(rgb[1]) / 100, Number(rgb[2]) / 100, Number(rgb[3]) / 100]
+  }
+
+  throw new Error(`Unsupported CSS color for ${name}: ${value}`)
 }
 
 function hslToRgb(hue: number, saturationPercent: number, lightnessPercent: number): Rgb {

@@ -67,28 +67,28 @@ const slots = useSlots()
 <style>
 .dialog__overlay {
   position: fixed;
-  z-index: var(--layer-overlay);
+  z-index: var(--z-index-overlay);
   inset: 0;
-  background: var(--color-backdrop);
+  background: var(--overlay-backdrop-bg-color);
 }
 
 .dialog__content {
-  --dialog-content-width: var(--layout-dialog-max);
+  --dialog-content-width: var(--overlay-width-medium);
 
   position: fixed;
-  z-index: var(--layer-modal);
+  z-index: var(--z-index-modal);
   top: 50%;
   left: 50%;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   box-sizing: border-box;
-  width: min(var(--dialog-content-width), calc(100vw - var(--space-8)));
-  max-height: calc(100dvh - var(--space-8));
-  border: var(--stroke-default) solid var(--color-border-default);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  color: var(--color-content-primary);
-  background: var(--color-surface-panel);
+  width: min(var(--dialog-content-width), calc(100vw - var(--base-size-32)));
+  max-height: calc(100dvh - var(--base-size-32));
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-large);
+  padding: var(--base-size-24);
+  color: var(--fg-color-default);
+  background: var(--overlay-bg-color);
   transform: translate(-50%, -50%);
 }
 
@@ -96,33 +96,29 @@ const slots = useSlots()
   --dialog-content-width: var(--layout-dialog-wide-max);
 }
 
-.dialog__content:focus-visible {
-  outline: none;
-}
-
 .dialog__header,
 .dialog__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--base-size-16);
 }
 
 .dialog__heading {
   display: grid;
-  gap: var(--space-1);
+  gap: var(--base-size-4);
 }
 
 .dialog__title {
   margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-title-size-medium);
+  font-weight: var(--base-text-weight-semibold);
 }
 
 .dialog__description {
   margin: 0;
-  color: var(--color-content-secondary);
-  font-size: var(--font-size-sm);
+  color: var(--fg-color-muted);
+  font-size: var(--text-body-size-medium);
 }
 
 .dialog__body {
@@ -130,8 +126,8 @@ const slots = useSlots()
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
-  margin-block: var(--space-4);
-  padding-inline-end: var(--space-1);
+  margin-block: var(--base-size-16);
+  padding-inline-end: var(--base-size-4);
 }
 
 .dialog__footer {

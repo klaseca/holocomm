@@ -102,10 +102,10 @@ function roomInitials(slug: string): string {
   justify-items: center;
   width: var(--layout-app-navigation);
   height: 100vh;
-  gap: var(--space-2);
-  border-right: var(--stroke-default) solid var(--color-border-default);
-  padding: var(--space-3) 0;
-  background: var(--color-surface-inset);
+  gap: var(--base-size-8);
+  border-right: var(--border-width-thin) solid var(--border-color-default);
+  padding: var(--base-size-12) 0;
+  background: var(--bg-color-inset);
 }
 
 .navigation-button,
@@ -114,25 +114,25 @@ function roomInitials(slug: string): string {
   display: grid;
   flex: none;
   place-items: center;
-  width: var(--size-control-lg);
-  height: var(--size-control-lg);
-  border: 0;
-  border-radius: calc(var(--size-control-lg) / 2);
-  color: var(--color-content-secondary);
-  background: var(--color-surface-panel);
+  width: var(--control-xlarge-size);
+  height: var(--control-xlarge-size);
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: calc(var(--control-xlarge-size) / 2);
+  color: var(--fg-color-muted);
+  background: var(--bg-color-default);
   font: inherit;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-semibold);
   cursor: pointer;
   transition:
-    border-radius var(--duration-normal) var(--ease-out),
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out);
+    border-radius var(--motion-duration-short) var(--motion-easing-hover),
+    color var(--motion-duration-micro) var(--motion-easing-hover),
+    background-color var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .navigation-button svg {
-  width: var(--size-icon-sm);
-  height: var(--size-icon-sm);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -142,33 +142,28 @@ function roomInitials(slug: string): string {
 
 .navigation-button:hover,
 .navigation-button--active {
-  border-radius: var(--radius-md);
-  color: var(--color-content-on-emphasis);
-  background: var(--color-accent-emphasis);
+  border-color: var(--bg-color-accent-emphasis);
+  border-radius: var(--border-radius-default);
+  color: var(--fg-color-on-emphasis);
+  background: var(--bg-color-accent-emphasis);
 }
 
 .navigation-item--active::before {
   position: absolute;
   top: 50%;
   left: 0;
-  width: var(--space-1);
-  height: var(--space-6);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: var(--color-content-primary);
+  width: var(--base-size-4);
+  height: var(--base-size-24);
+  border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+  background: var(--fg-color-default);
   content: '';
   transform: translateY(-50%);
 }
 
-.navigation-button:focus-visible,
-.app-navigation__profile:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
-}
-
 .app-navigation__separator {
-  width: var(--size-control-sm);
-  height: var(--stroke-default);
-  background: var(--color-border-default);
+  width: var(--control-medium-size);
+  height: var(--border-width-thin);
+  background: var(--border-color-default);
 }
 
 .app-navigation__rooms {
@@ -176,7 +171,7 @@ function roomInitials(slug: string): string {
   width: 100%;
   min-height: 0;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--base-size-8);
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
@@ -192,13 +187,13 @@ function roomInitials(slug: string): string {
 
 .navigation-item--connected::after {
   position: absolute;
-  right: var(--space-2);
+  right: var(--base-size-8);
   bottom: 0;
-  width: var(--space-2);
-  height: var(--space-2);
-  border: var(--stroke-default) solid var(--color-surface-inset);
-  border-radius: var(--radius-full);
-  background: var(--color-presence-online);
+  width: var(--base-size-8);
+  height: var(--base-size-8);
+  border: var(--border-width-thin) solid var(--bg-color-inset);
+  border-radius: var(--border-radius-full);
+  background: var(--fg-color-success);
   content: '';
 }
 
@@ -208,12 +203,16 @@ function roomInitials(slug: string): string {
 
 .app-navigation__profile {
   padding: 0;
-  background: transparent;
 }
 
-.app-navigation__profile:hover,
+.app-navigation__profile:hover {
+  border-color: var(--border-color-emphasis);
+  background: var(--button-default-bg-color-hover);
+}
+
 .app-navigation__profile--active {
-  border-radius: var(--radius-md);
-  background: var(--color-surface-panel);
+  border-color: var(--border-color-accent-emphasis);
+  border-radius: var(--border-radius-default);
+  background: var(--button-default-bg-color-active);
 }
 </style>

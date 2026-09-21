@@ -53,7 +53,7 @@ function updateDisplayName(displayName: string): void {
   grid-template-columns: var(--layout-app-navigation) minmax(0, 1fr);
   height: 100vh;
   overflow: hidden;
-  background: var(--color-surface-canvas);
+  background: var(--bg-color-default);
 }
 
 .settings-page > :last-child {

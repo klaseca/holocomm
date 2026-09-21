@@ -5,6 +5,7 @@
   "resolutionOrder": [
     { "$ref": "#/sets/base" },
     { "$ref": "#/sets/functional" },
+    { "$ref": "#/sets/component" },
     { "$ref": "#/sets/holocomm" },
     { "$ref": "#/modifiers/theme" },
     { "$ref": "#/modifiers/size" }
@@ -12,25 +13,44 @@
   "sets": {
     "base": {
       "sources": [
-        { "$ref": "./node_modules/dtcg-examples/github-primer/base/color/light/light.tokens.json" }
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/color/light/light.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/motion/easing.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/motion/timing.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/size/size.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/size/z-index.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/base/typography/typography.tokens.json" }
       ]
     },
     "functional": {
       "sources": [
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/border/border.tokens.json" },
         { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/bgColor.tokens.json" },
         { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/borderColor.tokens.json" },
         { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/control.tokens.json" },
-        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/fgColor.tokens.json" }
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/color/fgColor.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/motion/motion.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/shadow/shadow.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/border.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/radius.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/size.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/viewport.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/size/z-index.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/spacing/space.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/typography/font-stack.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/functional/typography/typography.tokens.json" }
+      ]
+    },
+    "component": {
+      "sources": [
+        { "$ref": "./node_modules/dtcg-examples/github-primer/component/button.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/component/focus.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/component/overlay.tokens.json" },
+        { "$ref": "./node_modules/dtcg-examples/github-primer/component/tooltip.tokens.json" }
       ]
     },
     "holocomm": {
       "sources": [
-        { "$ref": "./tokens/color.json" },
-        { "$ref": "./tokens/spacing.json" },
-        { "$ref": "./tokens/typography.json" },
-        { "$ref": "./tokens/radius.json" },
-        { "$ref": "./tokens/motion.json" },
-        { "$ref": "./tokens/layout.json" }
+        { "$ref": "./tokens/product.json" }
       ]
     }
   },

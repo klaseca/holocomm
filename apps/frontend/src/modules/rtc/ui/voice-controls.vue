@@ -156,16 +156,16 @@ function screenShareTooltip(): string {
 
 .voice-controls {
   justify-content: space-between;
-  gap: var(--space-2);
-  min-height: calc(var(--size-control-lg) + var(--space-2));
-  border-top: var(--stroke-default) solid var(--color-border-default);
-  padding: var(--space-2);
-  background: var(--color-surface-elevated);
+  gap: var(--base-size-8);
+  min-height: calc(var(--control-xlarge-size) + var(--base-size-8));
+  border-top: var(--border-width-thin) solid var(--border-color-default);
+  padding: var(--base-size-8);
+  background: var(--bg-color-muted);
 }
 
 .voice-controls__identity {
   min-width: 0;
-  gap: var(--space-2);
+  gap: var(--base-size-8);
 }
 
 .voice-controls__user {
@@ -181,81 +181,73 @@ function screenShareTooltip(): string {
 }
 
 .voice-controls__user strong {
-  color: var(--color-content-primary);
-  font-size: var(--font-size-sm);
+  color: var(--fg-color-default);
+  font-size: var(--text-body-size-medium);
 }
 
 .voice-controls__user span {
-  color: var(--color-presence-online);
-  font-size: var(--font-size-xs);
+  color: var(--fg-color-success);
+  font-size: var(--text-body-size-small);
 }
 
 .voice-controls__user .voice-controls__status--muted {
-  color: var(--color-content-secondary);
+  color: var(--fg-color-muted);
 }
 
 .voice-controls__actions {
   flex: none;
-  gap: var(--space-1);
+  gap: var(--base-size-4);
 }
 
 .control-button {
   justify-content: center;
-  width: var(--size-control-sm);
-  height: var(--size-control-sm);
-  border: var(--stroke-default) solid transparent;
-  border-radius: var(--radius-sm);
-  color: var(--color-content-secondary);
-  background: transparent;
+  width: var(--control-medium-size);
+  height: var(--control-medium-size);
+  border: var(--border-width-thin) solid transparent;
+  border-radius: var(--border-radius-medium);
+  color: var(--button-invisible-fg-color-rest);
+  background: var(--button-invisible-bg-color-rest);
   cursor: pointer;
   transition:
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
+    color var(--motion-duration-micro) var(--motion-easing-hover),
+    background-color var(--motion-duration-micro) var(--motion-easing-hover),
+    border-color var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
 .control-button:hover:not(:disabled) {
-  color: var(--color-content-primary);
-  background: color-mix(
-    in srgb,
-    var(--color-content-primary) 14%,
-    var(--color-surface-elevated)
-  );
+  color: var(--button-invisible-fg-color-hover);
+  background: var(--button-invisible-bg-color-hover);
 }
 
 .control-button--muted {
-  color: var(--color-status-danger);
-  background: color-mix(in srgb, var(--color-status-danger) 14%, transparent);
+  color: var(--fg-color-danger);
+  background: var(--bg-color-danger-muted);
 }
 
 .control-button--muted:hover:not(:disabled) {
-  color: var(--color-status-danger);
-  background: color-mix(in srgb, var(--color-status-danger) 22%, transparent);
+  color: var(--fg-color-danger);
+  background: var(--bg-color-danger-muted);
 }
 
 .control-button--active {
-  color: var(--color-media-sharing);
-  background: color-mix(in srgb, var(--color-accent-emphasis) 18%, transparent);
+  color: var(--fg-color-accent);
+  background: var(--bg-color-accent-muted);
 }
 
 .control-button--active:hover:not(:disabled) {
-  color: var(--color-media-sharing);
-  background: color-mix(in srgb, var(--color-accent-emphasis) 28%, transparent);
+  color: var(--fg-color-accent);
+  background: var(--control-bg-color-hover);
 }
 
 .control-button:disabled {
-  color: var(--color-content-secondary);
+  color: var(--control-fg-color-disabled);
+  background: var(--control-bg-color-disabled);
   cursor: wait;
 }
 
-.control-button:focus-visible {
-  outline: var(--stroke-focus) solid var(--color-focus);
-  outline-offset: var(--stroke-focus-offset);
-}
-
 .control-button svg {
-  width: var(--size-icon-sm);
-  height: var(--size-icon-sm);
+  width: var(--base-size-16);
+  height: var(--base-size-16);
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -269,7 +261,7 @@ function screenShareTooltip(): string {
 }
 
 .control-button--disconnect {
-  color: var(--color-status-danger);
+  color: var(--fg-color-danger);
 }
 
 .control-button--disconnect svg {
@@ -278,8 +270,8 @@ function screenShareTooltip(): string {
 }
 
 .control-button--disconnect:hover:not(:disabled) {
-  color: var(--color-status-danger);
-  background: color-mix(in srgb, var(--color-status-danger) 22%, transparent);
+  color: var(--fg-color-danger);
+  background: var(--bg-color-danger-muted);
 }
 
 @keyframes control-spin {
