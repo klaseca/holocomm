@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ParticipantDto } from '@holocomm/protocol'
 import { computed, onMounted, ref } from 'vue'
 
 import { ChatPanel } from '#/modules/chat/ui/chat-panel.vue'
@@ -23,6 +24,8 @@ const session = roomSessionContext.inject()
 
 const preview = useRoomPreview(props.slug, session.webSocketUrl)
 
+const joiningParticipants = ref<readonly ParticipantDto[]>([])
+
 const displayName = ref(props.initialDisplayName)
 
 const copyLabel = ref('Copy invite')
@@ -32,6 +35,16 @@ const mediaSettingsOpen = ref(false)
 const activeRoom = computed(() => session.roomSlug.value === props.slug)
 
 const connected = computed(() => activeRoom.value && session.connectionState.value === 'connected')
+
+const visibleParticipants = computed(() => {
+  if (!activeRoom.value) {
+    return preview.participants.value
+  }
+
+  return session.participants.value.length > 0
+    ? session.participants.value
+    : joiningParticipants.value
+})
 
 const previewing = computed(() => !activeRoom.value || session.connectionState.value === 'idle')
 
@@ -105,6 +118,10 @@ const screenShares = computed(() => {
 function join(): void {
   if (displayName.value === '') {
     return
+  }
+
+  if (previewing.value) {
+    joiningParticipants.value = [...preview.participants.value]
   }
 
   preview.stop()
@@ -204,16 +221,29 @@ onMounted(() => {
       </div>
     </header>
 
-    <div v-if="previewing" class="room__workspace">
-      <div class="room__sidebar room__sidebar--preview">
+    <div class="room__workspace">
+      <div class="room__sidebar">
         <ParticipantsPanel
-          :audio-settings="emptyAudioSettings"
-          :can-configure-audio="false"
-          :participants="preview.participants.value"
-          :speaking-ids="emptySpeakingIds"
+          :audio-settings="connected ? session.participantAudioSettings.value : emptyAudioSettings"
+          :can-configure-audio="connected"
+          :participants="visibleParticipants"
+          :self-id="connected ? session.self.value?.id : undefined"
+          :speaking-ids="connected ? speakingIds : emptySpeakingIds"
+          @set-volume="session.setParticipantVolume"
+          @toggle-mute="session.toggleParticipantMuted"
+        />
+        <VoiceControls
+          v-if="connected"
+          :display-name="session.self.value?.displayName ?? displayName"
+          :microphone-state="session.microphoneState.value"
+          :screen-share-state="session.screenShareState.value"
+          @leave="disconnectFromCall"
+          @open-media-settings="mediaSettingsOpen = true"
+          @toggle-microphone="session.toggleMicrophone"
+          @toggle-screen-share="session.toggleScreenShare"
         />
       </div>
-      <section class="room-preview">
+      <section v-if="previewing" class="room-preview">
         <div class="room-preview__card">
           <p class="eyebrow">Voice room</p>
           <h2>Join when you’re ready</h2>
@@ -234,90 +264,68 @@ onMounted(() => {
           </div>
         </div>
       </section>
-    </div>
-
-    <div v-else-if="!connected" class="connection-screen" role="status">
-      <span class="connection-screen__pulse"></span>
-      <h2>{{ connectionLabel }}</h2>
-      <p v-if="session.error.value">{{ session.error.value }}</p>
-      <p v-else>Establishing the live room session…</p>
-      <div class="connection-screen__actions">
-        <Button
-          v-if="
-            session.connectionState.value === 'error'
-              || session.connectionState.value === 'disconnected'
-          "
-          @click="join"
-        >
-          Try again
-        </Button>
-        <Button variant="secondary" @click="cancelConnectionAndLeave">Back home</Button>
-      </div>
-    </div>
-
-    <template v-else>
-      <div class="room__workspace">
-        <div class="room__sidebar">
-          <ParticipantsPanel
-            :audio-settings="session.participantAudioSettings.value"
-            :can-configure-audio="true"
-            :participants="session.participants.value"
-            :self-id="session.self.value?.id"
-            :speaking-ids="speakingIds"
-            @set-volume="session.setParticipantVolume"
-            @toggle-mute="session.toggleParticipantMuted"
-          />
-          <VoiceControls
-            :display-name="session.self.value?.displayName ?? displayName"
-            :microphone-state="session.microphoneState.value"
-            :screen-share-state="session.screenShareState.value"
-            @leave="disconnectFromCall"
-            @open-media-settings="mediaSettingsOpen = true"
-            @toggle-microphone="session.toggleMicrophone"
-            @toggle-screen-share="session.toggleScreenShare"
+      <section v-else-if="!connected" class="connection-screen" role="status">
+        <span class="connection-screen__pulse"></span>
+        <h2>{{ connectionLabel }}</h2>
+        <p v-if="session.error.value">{{ session.error.value }}</p>
+        <p v-else>Establishing the live room session…</p>
+        <div class="connection-screen__actions">
+          <Button
+            v-if="
+              session.connectionState.value === 'error'
+                || session.connectionState.value === 'disconnected'
+            "
+            @click="join"
+          >
+            Try again
+          </Button>
+          <Button variant="secondary" @click="cancelConnectionAndLeave">Back home</Button>
+        </div>
+      </section>
+      <section
+        v-else
+        class="room__content"
+        :class="{ 'room__content--sharing': screenShares.length > 0 }"
+      >
+        <div v-if="screenShares.length > 0" class="screen-previews" aria-label="Shared screens">
+          <RemoteScreen
+            v-for="share in screenShares"
+            :key="share.id"
+            :label="share.label"
+            :muted="
+              share.local || session.participantAudioSettings.value[share.id]?.muted === true
+            "
+            :stream="share.stream"
+            :volume="session.participantAudioSettings.value[share.id]?.volume ?? 1"
           />
         </div>
-        <section
-          class="room__content"
-          :class="{ 'room__content--sharing': screenShares.length > 0 }"
-        >
-          <div v-if="screenShares.length > 0" class="screen-previews" aria-label="Shared screens">
-            <RemoteScreen
-              v-for="share in screenShares"
-              :key="share.id"
-              :label="share.label"
-              :muted="
-                share.local || session.participantAudioSettings.value[share.id]?.muted === true
-              "
-              :stream="share.stream"
-              :volume="session.participantAudioSettings.value[share.id]?.volume ?? 1"
-            />
-          </div>
-          <ChatPanel
-            class="room__chat"
-            :can-send="connected"
-            :messages="session.messages.value"
-            :self-id="session.self.value?.id"
-            @send="sendChat"
-          />
-        </section>
-      </div>
-      <div
-        v-if="
-          session.error.value
+        <ChatPanel
+          class="room__chat"
+          :can-send="connected"
+          :messages="session.messages.value"
+          :self-id="session.self.value?.id"
+          @send="sendChat"
+        />
+      </section>
+    </div>
+    <div
+      v-if="
+        connected
+          && (
+            session.error.value
             || session.rtcError.value
             || session.microphoneError.value
             || session.screenShareError.value
-        "
-        class="room__media-error"
-        role="alert"
-      >
-        <p v-if="session.error.value">{{ session.error.value }}</p>
-        <p v-if="session.rtcError.value">{{ session.rtcError.value }}</p>
-        <p v-if="session.microphoneError.value">{{ session.microphoneError.value }}</p>
-        <p v-if="session.screenShareError.value">{{ session.screenShareError.value }}</p>
-      </div>
-    </template>
+          )
+      "
+      class="room__media-error"
+      role="alert"
+    >
+      <p v-if="session.error.value">{{ session.error.value }}</p>
+      <p v-if="session.rtcError.value">{{ session.rtcError.value }}</p>
+      <p v-if="session.microphoneError.value">{{ session.microphoneError.value }}</p>
+      <p v-if="session.screenShareError.value">{{ session.screenShareError.value }}</p>
+    </div>
   </main>
   <MediaSettingsDialog v-model="mediaSettingsOpen" />
 </template>
