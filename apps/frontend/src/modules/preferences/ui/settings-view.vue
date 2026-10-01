@@ -152,7 +152,7 @@ function saveDisplayName(): void {
 .settings {
   width: min(100%, 52rem);
   margin-inline: auto;
-  padding: var(--base-size-40);
+  padding: clamp(var(--base-size-16), 4vw, var(--base-size-40));
 }
 
 .settings__header {
@@ -190,7 +190,7 @@ function saveDisplayName(): void {
   gap: var(--base-size-20);
   border: var(--border-width-thin) solid var(--border-color-default);
   border-radius: var(--border-radius-large);
-  padding: var(--base-size-24);
+  padding: clamp(var(--base-size-16), 3vw, var(--base-size-24));
   background: var(--bg-color-muted);
 }
 
@@ -202,8 +202,14 @@ function saveDisplayName(): void {
 .profile-form__footer {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--base-size-16);
+}
+
+.settings-section__header > :first-child,
+.profile-form__footer > :first-child {
+  flex: 1 1 16rem;
 }
 
 .settings-section__header h2 {
@@ -223,7 +229,7 @@ function saveDisplayName(): void {
 
 .theme-options {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
   gap: var(--base-size-12);
 }
 
@@ -349,23 +355,14 @@ function saveDisplayName(): void {
   border: var(--base-size-4) solid var(--bg-color-accent-emphasis);
 }
 
-@media (max-width: 48rem) {
-  .settings {
-    padding: var(--base-size-24);
+@container application (inline-size < 44rem) {
+  .settings__header {
+    margin-bottom: var(--base-size-20);
   }
 
-  .theme-options {
-    grid-template-columns: 1fr;
-  }
-
-  .settings-section__header,
-  .profile-form__footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .settings-section__header :deep(.avatar) {
-    align-self: flex-start;
+  .settings h1 {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+    line-height: 1.1;
   }
 }
 </style>

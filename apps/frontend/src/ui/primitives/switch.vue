@@ -35,6 +35,7 @@ const id = useId()
 
 .switch-field__copy {
   display: grid;
+  min-width: 0;
   gap: var(--base-size-4);
 }
 

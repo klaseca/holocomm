@@ -36,14 +36,15 @@ defineProps<{
   overflow: hidden;
 }
 
-.scroll-area__viewport {
+.scroll-area :deep(.scroll-area__viewport) {
   width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
+  max-height: 100%;
 }
 
-.scroll-area__scrollbar {
+.scroll-area :deep(.scroll-area__scrollbar) {
   display: flex;
   width: var(--layout-scrollbar);
   padding: var(--base-size-4);
@@ -52,7 +53,7 @@ defineProps<{
   user-select: none;
 }
 
-.scroll-area__thumb {
+.scroll-area :deep(.scroll-area__thumb) {
   position: relative;
   flex: 1;
   border-radius: var(--border-radius-full);

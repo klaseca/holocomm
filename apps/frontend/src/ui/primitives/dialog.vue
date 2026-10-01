@@ -15,14 +15,34 @@ import { IconButton } from './icon-button.vue'
 
 withDefaults(
   defineProps<{
-    description?: string
-    size?: 'md' | 'lg'
+    contentClass?: string
+    description: string
+    size?: 'md' | 'lg' | 'sheet'
     title: string
   }>(),
-  { description: undefined, size: 'md' },
+  { contentClass: undefined, size: 'md' },
 )
 
+const emit = defineEmits<{
+  closeAutoFocus: [event: Event]
+}>()
+
 const open = defineModel<boolean>({ default: false })
+
+let opener: HTMLElement | undefined
+
+function rememberOpener(): void {
+  opener = document.activeElement instanceof HTMLElement ? document.activeElement : undefined
+}
+
+function restoreFocus(event: Event): void {
+  emit('closeAutoFocus', event)
+
+  if (!event.defaultPrevented && opener?.isConnected) {
+    event.preventDefault()
+    opener.focus({ preventScroll: true })
+  }
+}
 
 const slots = useSlots()
 </script>
@@ -36,12 +56,14 @@ const slots = useSlots()
       <DialogOverlay class="dialog__overlay" />
       <DialogContent
         class="dialog__content"
-        :class="`dialog__content--${size}`"
+        :class="[`dialog__content--${size}`, contentClass]"
+        @open-auto-focus="rememberOpener"
+        @close-auto-focus="restoreFocus"
       >
         <header class="dialog__header">
           <div class="dialog__heading">
             <DialogTitle class="dialog__title">{{ title }}</DialogTitle>
-            <DialogDescription v-if="description" class="dialog__description">
+            <DialogDescription class="dialog__description">
               {{ description }}
             </DialogDescription>
           </div>
@@ -82,11 +104,11 @@ const slots = useSlots()
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   box-sizing: border-box;
-  width: min(var(--dialog-content-width), calc(100vw - var(--base-size-32)));
-  max-height: calc(100dvh - var(--base-size-32));
+  width: min(var(--dialog-content-width), calc(100vw - var(--base-size-16)));
+  max-height: calc(100dvh - var(--base-size-16));
   border: var(--border-width-thin) solid var(--border-color-default);
   border-radius: var(--border-radius-large);
-  padding: var(--base-size-24);
+  padding: clamp(var(--base-size-16), 4vw, var(--base-size-24));
   color: var(--fg-color-default);
   background: var(--overlay-bg-color);
   transform: translate(-50%, -50%);
@@ -96,16 +118,46 @@ const slots = useSlots()
   --dialog-content-width: var(--layout-dialog-wide-max);
 }
 
+@media (max-width: 40rem) {
+  .dialog__header .icon-button {
+    min-width: var(--base-size-44);
+    min-height: var(--base-size-44);
+  }
+
+  .dialog__content--sheet {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: min(85dvh, 42rem);
+    border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+    padding-bottom: max(var(--base-size-16), env(safe-area-inset-bottom));
+    transform: none;
+  }
+}
+
 .dialog__header,
 .dialog__footer {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--base-size-16);
 }
 
+.dialog__header {
+  align-items: flex-start;
+  flex-wrap: nowrap;
+}
+
+.dialog__header .icon-button {
+  flex: none;
+}
+
 .dialog__heading {
   display: grid;
+  min-width: 0;
+  flex: 1;
   gap: var(--base-size-4);
 }
 

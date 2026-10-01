@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import type { ParticipantDto } from '@holocomm/protocol'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref, useTemplateRef, watch } from 'vue'
 
 import { ChatPanel } from '#/modules/chat/ui/chat-panel.vue'
-import { MediaSettingsDialog } from '#/modules/rtc/ui/media-settings-dialog.vue'
+import { NavigationTrigger } from '#/modules/identity/ui/navigation-trigger.vue'
 import { RemoteScreen } from '#/modules/rtc/ui/remote-screen.vue'
 import { useVoiceActivity } from '#/modules/rtc/ui/use-voice-activity.ts'
 import { VoiceControls } from '#/modules/rtc/ui/voice-controls.vue'
-import { Button } from '#/ui/primitives'
+import { Button, IconButton, Tooltip } from '#/ui/primitives'
+import { useResponsiveDialog } from '#/ui/use-responsive-dialog.ts'
 
-import { type RoomPreviewState, useRoomPreview } from '../application/use-room-preview.ts'
+import { useRoomPreview } from '../application/use-room-preview.ts'
 import { type ConnectionState, roomSessionContext } from '../application/use-room-session.ts'
+import { callControlsContext } from './call-controls-context.ts'
 import { ParticipantsPanel } from './participants-panel.vue'
 
 const props = defineProps<{
@@ -22,6 +24,8 @@ const emit = defineEmits<{ leave: [] }>()
 
 const session = roomSessionContext.inject()
 
+const callControls = callControlsContext.inject()
+
 const preview = useRoomPreview(props.slug, session.webSocketUrl)
 
 const joiningParticipants = ref<readonly ParticipantDto[]>([])
@@ -30,7 +34,32 @@ const displayName = ref(props.initialDisplayName)
 
 const copyLabel = ref('Copy invite')
 
-const mediaSettingsOpen = ref(false)
+const participantsOpen = ref(false)
+
+const participantsDialog = useTemplateRef<HTMLDialogElement>('participantsDialog')
+
+let participantsTrigger: HTMLElement | undefined
+
+function openParticipants(event: MouseEvent): void {
+  participantsTrigger = event.currentTarget as HTMLElement
+  participantsOpen.value = true
+}
+
+function restoreParticipantsFocus(): void {
+  const trigger = participantsTrigger?.isConnected
+    && participantsTrigger.getClientRects().length > 0
+    ? participantsTrigger
+    : document.querySelector<HTMLElement>('.room__copy-button')
+
+  trigger?.focus({ preventScroll: true })
+}
+
+const participantsModal = useResponsiveDialog(
+  participantsDialog,
+  callControls.compact,
+  participantsOpen,
+  restoreParticipantsFocus,
+)
 
 const activeRoom = computed(() => session.roomSlug.value === props.slug)
 
@@ -48,15 +77,7 @@ const visibleParticipants = computed(() => {
 
 const previewing = computed(() => !activeRoom.value || session.connectionState.value === 'idle')
 
-const connectionLabel = computed(() =>
-  previewing.value
-    ? describePreview(preview.state.value, preview.participants.value.length)
-    : describeConnection(session.connectionState.value),
-)
-
-const connectionClass = computed(() =>
-  previewing.value ? preview.state.value : session.connectionState.value,
-)
+const connectionLabel = computed(() => describeConnection(session.connectionState.value))
 
 const emptySpeakingIds = new Set<string>()
 
@@ -139,11 +160,6 @@ function cancelConnectionAndLeave(): void {
   emit('leave')
 }
 
-function disconnectFromCall(): void {
-  session.leave()
-  preview.watch()
-}
-
 function sendChat(content: string, acknowledge: (sent: boolean) => void): void {
   acknowledge(session.sendChat(content))
 }
@@ -184,61 +200,93 @@ function describeConnection(state: ConnectionState): string {
   }
 }
 
-function describePreview(state: RoomPreviewState, participantCount: number): string {
-  switch (state) {
-    case 'idle':
-      return 'Preview'
-    case 'connecting':
-      return 'Loading room'
-    case 'connected':
-      return `${participantCount} connected`
-    case 'reconnecting':
-      return 'Refreshing room'
-    case 'error':
-      return 'Preview unavailable'
-  }
-}
-
-onMounted(() => {
-  if (!activeRoom.value) {
+watch(previewing, (enabled) => {
+  if (enabled) {
     preview.watch()
+  } else {
+    preview.stop()
   }
-})
+}, { immediate: true })
 </script>
 
 <template>
   <main class="room">
     <header class="room__header">
-      <div>
+      <NavigationTrigger />
+      <div class="room__heading">
         <p class="room__label">Room</p>
-        <h1>{{ slug }}</h1>
+        <h1 :title="slug">{{ slug }}</h1>
       </div>
       <div class="room__header-actions">
-        <span class="connection" :class="`connection--${connectionClass}`">
-          {{ connectionLabel }}
+        <Tooltip :text="`Participants · ${visibleParticipants.length}`">
+          <Button
+            class="room__participants-button"
+            size="sm"
+            variant="secondary"
+            :aria-label="`Show participants, ${visibleParticipants.length} people`"
+            aria-haspopup="dialog"
+            :aria-expanded="participantsOpen"
+            @click="openParticipants"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="9" cy="8" r="3" />
+              <path d="M3 20v-2a6 6 0 0 1 12 0v2H3Zm13-14a3 3 0 0 1 0 6m1 3a5 5 0 0 1 4 5h-4" />
+            </svg>
+            <span aria-hidden="true">{{ visibleParticipants.length }}</span>
+          </Button>
+        </Tooltip>
+        <Tooltip :text="copyLabel">
+          <IconButton class="room__copy-button" :label="copyLabel" @click="copyInvite">
+            <svg v-if="copyLabel === 'Copied'" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m4 12 5 5L20 6" />
+            </svg>
+            <svg v-else-if="copyLabel === 'Copy failed'" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v6m0 4h.01" />
+            </svg>
+            <svg v-else viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="8" y="8" width="12" height="12" rx="2" />
+              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+            </svg>
+          </IconButton>
+        </Tooltip>
+        <span v-if="copyLabel !== 'Copy invite'" class="room__copy-announcement" role="status">
+          {{ copyLabel }}
         </span>
-        <Button size="sm" variant="secondary" @click="copyInvite">{{ copyLabel }}</Button>
       </div>
     </header>
 
     <div class="room__workspace">
       <div class="room__sidebar">
-        <ParticipantsPanel
-          :audio-settings="connected ? session.participantAudioSettings.value : emptyAudioSettings"
-          :can-configure-audio="connected"
-          :participants="visibleParticipants"
-          :self-id="connected ? session.self.value?.id : undefined"
-          :speaking-ids="connected ? speakingIds : emptySpeakingIds"
-          @set-volume="session.setParticipantVolume"
-          @toggle-mute="session.toggleParticipantMuted"
-        />
+        <Teleport
+          :disabled="!callControls.compact.value"
+          :to="participantsDialog ?? 'body'"
+        >
+          <ParticipantsPanel
+            :audio-settings="
+              connected ? session.participantAudioSettings.value : emptyAudioSettings
+            "
+            :can-configure-audio="connected"
+            :participants="visibleParticipants"
+            :portal-target="
+              callControls.compact.value ? participantsDialog ?? undefined : undefined
+            "
+            :self-id="connected ? session.self.value?.id : undefined"
+            :speaking-ids="connected ? speakingIds : emptySpeakingIds"
+            @set-volume="session.setParticipantVolume"
+            @toggle-mute="session.toggleParticipantMuted"
+          />
+        </Teleport>
         <VoiceControls
-          v-if="connected"
+          v-if="callControls.docked.value"
+          layout="panel"
+          :connected="connected"
+          :connection-label="connectionLabel"
           :display-name="session.self.value?.displayName ?? displayName"
           :microphone-state="session.microphoneState.value"
           :screen-share-state="session.screenShareState.value"
-          @leave="disconnectFromCall"
-          @open-media-settings="mediaSettingsOpen = true"
+          @leave="session.leave"
+          @open-media-settings="callControls.openMediaSettings"
           @toggle-microphone="session.toggleMicrophone"
           @toggle-screen-share="session.toggleScreenShare"
         />
@@ -258,14 +306,18 @@ onMounted(() => {
             {{ preview.participants.value.length === 1 ? 'person is' : 'people are' }}
             currently connected.
           </p>
+          <p v-if="session.roomSlug.value != null && !activeRoom">
+            You’re in {{ session.roomSlug.value }}. Joining this room will leave that call.
+          </p>
           <div class="room-preview__actions">
-            <Button @click="join">Join room</Button>
+            <Button @click="join">
+              {{ session.roomSlug.value != null && !activeRoom ? 'Switch to this room' : 'Join room' }}
+            </Button>
             <Button variant="secondary" @click="leaveRoom">Back home</Button>
           </div>
         </div>
       </section>
       <section v-else-if="!connected" class="connection-screen" role="status">
-        <span class="connection-screen__pulse"></span>
         <h2>{{ connectionLabel }}</h2>
         <p v-if="session.error.value">{{ session.error.value }}</p>
         <p v-else>Establishing the live room session…</p>
@@ -291,6 +343,7 @@ onMounted(() => {
           <RemoteScreen
             v-for="share in screenShares"
             :key="share.id"
+            class="screen-preview"
             :label="share.label"
             :muted="
               share.local || session.participantAudioSettings.value[share.id]?.muted === true
@@ -327,15 +380,31 @@ onMounted(() => {
       <p v-if="session.screenShareError.value">{{ session.screenShareError.value }}</p>
     </div>
   </main>
-  <MediaSettingsDialog v-model="mediaSettingsOpen" />
+  <dialog
+    ref="participantsDialog"
+    class="room-participants-dialog"
+    aria-label="Room participants"
+    @cancel="participantsModal.cancel"
+    @click="participantsModal.closeOnBackdrop"
+  >
+    <IconButton
+      class="room-participants-dialog__close"
+      label="Close participants"
+      @click="participantsOpen = false"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M3 3l10 10M13 3 3 13" />
+      </svg>
+    </IconButton>
+  </dialog>
 </template>
 
 <style scoped>
 .room {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  height: 100vh;
-  min-height: 36rem;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   background: var(--bg-color-inset);
 }
@@ -349,7 +418,10 @@ onMounted(() => {
 }
 
 .room__header {
+  min-width: 0;
+  flex-wrap: nowrap;
   justify-content: space-between;
+  gap: var(--base-size-12);
   min-height: calc(var(--control-xlarge-size) + var(--base-size-12));
   border-bottom: var(--border-width-thin) solid var(--border-color-default);
   padding: var(--base-size-8) var(--base-size-16);
@@ -358,7 +430,6 @@ onMounted(() => {
 
 .room__label,
 .eyebrow,
-.stage p,
 .connection-screen p {
   margin: 0;
   color: var(--fg-color-muted);
@@ -382,37 +453,68 @@ h1 {
 }
 
 .room__header-actions {
+  flex: none;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
   gap: var(--base-size-12);
 }
 
-.connection {
-  color: var(--fg-color-muted);
-  font-size: var(--text-body-size-medium);
+.room__participants-button {
+  display: none;
+  min-width: var(--base-size-44);
+  min-height: var(--base-size-44);
+  gap: var(--base-size-4);
+  padding-inline: var(--base-size-8);
 }
 
-.connection--connected {
-  color: var(--fg-color-success);
+.room__heading {
+  min-width: 0;
+  flex: 1;
 }
 
-.connection--reconnecting {
-  color: var(--fg-color-attention);
+.room__header h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.connection--error,
-.connection--disconnected {
-  color: var(--fg-color-danger);
+.room__participants-button svg {
+  width: var(--base-size-16);
+  height: var(--base-size-16);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.room__copy-button {
+  width: var(--base-size-44);
+  min-height: var(--base-size-44);
+}
+
+.room__copy-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .room__workspace {
   display: grid;
-  grid-template-columns: 20rem minmax(0, 1fr);
+  grid-template-columns: clamp(14rem, 20vw, 18rem) minmax(0, 1fr);
+  min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .room__sidebar {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   min-width: 0;
+  min-height: 0;
   border-right: var(--border-width-thin) solid var(--border-color-default);
   background: var(--bg-color-muted);
 }
@@ -427,7 +529,10 @@ h1 {
 .room-preview {
   display: grid;
   min-width: 0;
-  place-items: center;
+  min-height: 0;
+  align-content: safe center;
+  justify-items: center;
+  overflow-y: auto;
   padding: var(--base-size-32);
   background: var(--bg-color-inset);
 }
@@ -457,27 +562,29 @@ h1 {
 
 .room__content {
   display: grid;
-  grid-template-rows: minmax(0, 1fr);
-  grid-template-areas: 'chat';
+  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
   min-height: 0;
 }
 
 .room__content--sharing {
-  grid-template-columns: minmax(0, 1fr) clamp(16rem, 24vw, 22rem);
-  grid-template-areas: 'chat previews';
+  grid-template-columns: minmax(0, 1fr) clamp(14rem, 22vw, 20rem);
 }
 
 .room__chat {
-  grid-area: chat;
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
 }
 
 .screen-previews {
-  grid-area: previews;
   display: grid;
+  grid-column: 2;
+  grid-row: 1;
   align-content: start;
+  min-width: 0;
   min-height: 0;
   gap: var(--base-size-12);
   overflow-y: auto;
@@ -488,22 +595,14 @@ h1 {
 
 .connection-screen {
   display: grid;
-  place-items: center;
-}
-
-.connection-screen {
-  align-content: center;
+  min-width: 0;
+  min-height: 0;
+  align-content: safe center;
+  justify-items: center;
   gap: var(--base-size-12);
+  overflow-y: auto;
   padding: var(--base-size-32);
   text-align: center;
-}
-
-.connection-screen__pulse {
-  width: var(--base-size-16);
-  height: var(--base-size-16);
-  border-radius: var(--border-radius-full);
-  background: var(--fg-color-success);
-  box-shadow: var(--room-connection-online-box-shadow);
 }
 
 .connection-screen__actions,
@@ -511,27 +610,178 @@ h1 {
   gap: var(--base-size-8);
 }
 
-@media (max-width: 60rem) {
-  .room__workspace {
-    grid-template-columns: 14rem 1fr;
+@container application (inline-size < 72rem) {
+  .room__header {
+    gap: var(--base-size-8);
+    padding: var(--base-size-8) var(--base-size-12);
   }
 
+  .room__label {
+    display: none;
+  }
+
+  .room__header h1 {
+    font-size: var(--text-body-size-large);
+  }
+
+  .room__header-actions {
+    flex: none;
+    flex-wrap: nowrap;
+    gap: var(--base-size-8);
+  }
+
+  .room-preview,
+  .connection-screen {
+    padding: var(--base-size-16);
+  }
+
+  .room-preview__card {
+    padding: var(--base-size-16);
+  }
+}
+
+@container application (inline-size < 48rem) {
+  .room__participants-button {
+    display: inline-flex;
+  }
+
+  .room__workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .room__sidebar {
+    display: none;
+  }
+
+  .room-preview,
+  .connection-screen,
+  .room__content {
+    grid-row: 1;
+  }
+}
+
+@container page (inline-size < 64rem) {
   .room__content--sharing {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    grid-template-areas:
-      'chat'
-      'previews';
+    grid-template-rows: minmax(8rem, min(45%, 14rem)) minmax(0, 1fr);
   }
 
-  .screen-previews {
-    max-height: 13rem;
+  .room__content--sharing .screen-previews {
+    display: flex;
+    grid-column: 1;
+    grid-row: 1;
     overflow-x: auto;
     overflow-y: hidden;
-    border-top: var(--border-width-thin) solid var(--border-color-default);
+    border-bottom: var(--border-width-thin) solid var(--border-color-default);
     border-left: 0;
-    grid-auto-columns: minmax(15rem, 19rem);
-    grid-auto-flow: column;
   }
+
+  .room__content--sharing .screen-preview {
+    flex: 0 0 min(85%, 20rem);
+  }
+
+  .room__content--sharing .room__chat {
+    grid-row: 2;
+  }
+}
+
+@container page (inline-size < 22rem) {
+  .room-preview__actions {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .room-preview__actions > * {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-height: 25rem) {
+  .room-preview,
+  .connection-screen {
+    padding: var(--base-size-8);
+  }
+
+  .room-preview__card {
+    gap: var(--base-size-8);
+    padding: var(--base-size-12);
+  }
+
+  @container page (inline-size < 22rem) {
+    .room__content--sharing {
+      grid-template-rows: 5rem minmax(4rem, 1fr);
+      overflow-y: auto;
+    }
+
+    .room__content--sharing .room__chat {
+      min-height: 4rem;
+    }
+  }
+
+  @container page (inline-size >= 22rem) and (inline-size < 48rem) {
+    .room__content--sharing {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .room__content--sharing .screen-previews {
+      grid-column: 1;
+      grid-row: 1;
+      border-right: var(--border-width-thin) solid var(--border-color-default);
+      border-bottom: 0;
+    }
+
+    .room__content--sharing .screen-preview {
+      flex-basis: 100%;
+    }
+
+    .room__content--sharing .room__chat {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+}
+</style>
+
+<style>
+.room-participants-dialog {
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  width: min(100vw, 32rem);
+  height: fit-content;
+  max-height: min(75dvh, 32rem);
+  margin: 0 auto;
+  overflow: hidden;
+  border: var(--border-width-thin) solid var(--border-color-default);
+  border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+  padding: 0 0 env(safe-area-inset-bottom);
+  color: var(--fg-color-default);
+  background: var(--bg-color-muted);
+}
+
+.room-participants-dialog:not([open]) {
+  display: none;
+}
+
+.room-participants-dialog::backdrop {
+  background: var(--overlay-backdrop-bg-color);
+}
+
+.room-participants-dialog__close {
+  position: absolute;
+  z-index: 1;
+  top: var(--base-size-8);
+  right: var(--base-size-8);
+  width: var(--base-size-44);
+  height: var(--base-size-44);
+}
+
+.room-participants-dialog .participants__header {
+  padding-inline-end: calc(var(--base-size-44) + var(--base-size-16));
 }
 </style>

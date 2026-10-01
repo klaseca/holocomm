@@ -4,6 +4,7 @@ import { onBeforeUnmount } from 'vue'
 import { themeStateContext } from '../modules/preferences/application/theme-state.ts'
 import { roomSessionContext } from '../modules/room/application/use-room-session.ts'
 import { RemoteAudio } from '../modules/rtc/ui/remote-audio.vue'
+import { AppShell } from './app-shell.vue'
 
 const session = roomSessionContext.inject()
 
@@ -24,6 +25,9 @@ onBeforeUnmount(() => {
     :volume="session.participantAudioSettings.value[peerId]?.volume ?? 1"
   />
   <RouterView v-slot="{ Component, route }">
-    <component :is="Component" :key="route.fullPath" />
+    <AppShell v-if="route.name !== 'onboarding'">
+      <component :is="Component" :key="route.fullPath" />
+    </AppShell>
+    <component :is="Component" v-else :key="route.fullPath" />
   </RouterView>
 </template>

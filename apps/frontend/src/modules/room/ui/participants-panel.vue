@@ -6,23 +6,30 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from 'reka-ui'
+import { useId } from 'vue'
 
 import { Avatar, ScrollArea, Slider, Switch } from '#/ui/primitives'
 
 import type { ParticipantAudioSettings } from '../application/use-room-session.ts'
 
-defineProps<{
-  audioSettings: Readonly<Record<string, ParticipantAudioSettings>>
-  canConfigureAudio: boolean
-  participants: readonly ParticipantDto[]
-  selfId?: string
-  speakingIds: ReadonlySet<string>
-}>()
+withDefaults(
+  defineProps<{
+    audioSettings: Readonly<Record<string, ParticipantAudioSettings>>
+    canConfigureAudio: boolean
+    participants: readonly ParticipantDto[]
+    portalTarget?: HTMLElement
+    selfId?: string
+    speakingIds: ReadonlySet<string>
+  }>(),
+  { portalTarget: undefined, selfId: undefined },
+)
 
 const emit = defineEmits<{
   setVolume: [participantId: string, volume: number]
   toggleMute: [participantId: string]
 }>()
+
+const headingId = useId()
 
 function volumePercent(settings: ParticipantAudioSettings | undefined): number {
   return Math.round((settings?.volume ?? 1) * 100)
@@ -34,13 +41,14 @@ function setVolume(participantId: string, percent: number): void {
 </script>
 
 <template>
-  <aside class="participants" aria-labelledby="participants-title">
+  <aside class="participants" :aria-labelledby="headingId">
     <header class="participants__header">
-      <h2 id="participants-title">Participants</h2>
+      <h2 :id="headingId">Participants</h2>
       <span>{{ participants.length }}</span>
     </header>
     <ScrollArea accessible-label="Room participants" class="participants__scroll">
-      <ul class="participants__list">
+      <p v-if="participants.length === 0" class="participants__empty">No one is here yet.</p>
+      <ul v-else class="participants__list">
         <li
           v-for="participant in participants"
           :key="participant.id"
@@ -100,12 +108,13 @@ function setVolume(participantId: string, percent: number): void {
                   </svg>
                 </button>
               </PopoverTrigger>
-              <PopoverPortal>
+              <PopoverPortal :to="portalTarget">
                 <PopoverContent
                   class="participant-audio"
-                  align="start"
-                  side="right"
+                  align="end"
+                  side="top"
                   :side-offset="8"
+                  :collision-padding="16"
                 >
                   <div class="participant-audio__volume">
                     <div class="participant-audio__heading">
@@ -169,6 +178,13 @@ h2 {
   min-height: 0;
 }
 
+.participants__empty {
+  margin: 0;
+  padding: var(--base-size-24) var(--base-size-12);
+  color: var(--fg-color-muted);
+  text-align: center;
+}
+
 .participants__list {
   display: grid;
   gap: var(--base-size-8);
@@ -202,10 +218,9 @@ h2 {
 }
 
 .participant__name {
+  flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 small {
@@ -260,6 +275,44 @@ small {
 .participant__settings-button[data-state='open'] {
   color: var(--fg-color-default);
   background: var(--button-default-bg-color-hover);
+}
+
+@media (max-width: 30rem) {
+  .participants__list {
+    padding-inline: var(--base-size-8);
+  }
+
+  .participant {
+    display: grid;
+    grid-template-columns: var(--control-medium-size) minmax(0, 1fr) auto;
+    gap: var(--base-size-4) var(--base-size-8);
+    padding-inline: var(--base-size-4);
+  }
+
+  .participant__avatar {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+
+  .participant__name {
+    grid-column: 2 / -1;
+    grid-row: 1;
+  }
+
+  .participant__statuses {
+    grid-column: 2;
+    grid-row: 2;
+    margin-left: 0;
+  }
+
+  .participant__settings-button {
+    grid-column: 3;
+    grid-row: 2;
+    width: var(--base-size-44);
+    height: var(--base-size-44);
+  }
+
 }
 </style>
 

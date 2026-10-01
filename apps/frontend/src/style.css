@@ -7,14 +7,22 @@
   text-rendering: optimizeLegibility;
 }
 
+#app {
+  min-height: 100dvh;
+  container: application / inline-size;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  min-width: var(--layout-viewport-min);
-  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+body:has(.application-shell) {
+  overflow: hidden;
 }
 
 button,

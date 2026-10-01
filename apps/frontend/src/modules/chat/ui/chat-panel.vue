@@ -47,7 +47,10 @@ function formatTime(timestamp: number): string {
       tabindex="0"
     >
       <p v-if="messages.length === 0" class="chat__empty">
-        Nothing here yet. Messages appear only while you are in the room.
+        <span class="chat__empty-full">
+          Nothing here yet. Messages appear only while you are in the room.
+        </span>
+        <span class="chat__empty-compact">No messages yet.</span>
       </p>
       <ol v-else class="message-list" aria-live="polite">
         <li
@@ -74,7 +77,7 @@ function formatTime(timestamp: number): string {
         autocomplete="off"
         :disabled="!canSend"
         maxlength="2000"
-        placeholder="Message this room"
+        placeholder="Message"
       />
       <Button :disabled="!canSend || draft.trim().length === 0" native-type="submit">Send</Button>
     </form>
@@ -95,6 +98,10 @@ function formatTime(timestamp: number): string {
 .message__meta {
   display: flex;
   align-items: center;
+}
+
+.chat__composer {
+  flex-wrap: wrap;
 }
 
 .message p,
@@ -118,6 +125,10 @@ time {
   padding: var(--base-size-20);
   color: var(--fg-color-muted);
   text-align: center;
+}
+
+.chat__empty-compact {
+  display: none;
 }
 
 .message-list {
@@ -159,6 +170,41 @@ time {
 }
 
 .chat__composer > :first-child {
-  flex: 1;
+  min-width: min(100%, 12rem);
+  flex: 1 1 12rem;
+}
+
+.chat__composer > :last-child {
+  flex: none;
+}
+
+@container application (inline-size < 40rem) {
+  .chat__composer {
+    flex-wrap: nowrap;
+    padding: var(--base-size-8) var(--base-size-12)
+      max(var(--base-size-8), env(safe-area-inset-bottom));
+  }
+
+  .chat__composer > :first-child {
+    min-width: 0;
+  }
+
+  .message-list {
+    padding-inline: var(--base-size-8);
+  }
+}
+
+@media (max-height: 25rem) {
+  .chat__empty {
+    padding: var(--base-size-8);
+  }
+
+  .chat__empty-full {
+    display: none;
+  }
+
+  .chat__empty-compact {
+    display: inline;
+  }
 }
 </style>

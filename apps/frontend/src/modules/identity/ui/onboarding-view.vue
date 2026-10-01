@@ -59,13 +59,13 @@ function submit(): void {
 <style scoped>
 .onboarding {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(20rem, 26rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
   align-items: center;
   width: min(100% - var(--base-size-32), var(--layout-content-max));
-  min-height: 100vh;
-  gap: var(--base-size-48);
+  min-height: 100dvh;
+  gap: clamp(var(--base-size-24), 5vw, var(--base-size-48));
   margin-inline: auto;
-  padding-block: var(--base-size-40);
+  padding-block: clamp(var(--base-size-24), 5vw, var(--base-size-40));
 }
 
 .onboarding__intro {
@@ -91,7 +91,7 @@ function submit(): void {
 h1 {
   margin: var(--base-size-12) 0 var(--base-size-20);
   max-width: 44rem;
-  font-size: clamp(3rem, 5.5vw, 4.75rem);
+  font-size: clamp(2.25rem, 9vw, 4.75rem);
   line-height: 1;
   letter-spacing: -0.055em;
   text-wrap: balance;
@@ -109,7 +109,7 @@ h1 {
   gap: var(--base-size-16);
   border: var(--border-width-thin) solid var(--border-color-default);
   border-radius: var(--border-radius-large);
-  padding: var(--base-size-24);
+  padding: clamp(var(--base-size-20), 4vw, var(--base-size-24));
   background: var(--bg-color-muted);
   box-shadow: var(--shadow-resting-medium);
 }
@@ -123,38 +123,5 @@ h2 {
   color: var(--fg-color-muted);
   font-size: var(--text-body-size-medium);
   text-align: center;
-}
-
-@media (max-width: 64rem) {
-  .onboarding {
-    grid-template-columns: 1fr;
-    align-content: center;
-    width: min(100% - var(--base-size-32), 36rem);
-    gap: var(--base-size-24);
-    padding-block: var(--base-size-32);
-  }
-
-  .onboarding__intro {
-    text-align: center;
-  }
-
-  .onboarding__intro > p:last-child {
-    margin-inline: auto;
-  }
-
-  h1 {
-    font-size: clamp(2.75rem, 8vw, 4rem);
-  }
-}
-
-@media (max-width: 32rem) {
-  .onboarding {
-    width: min(100% - var(--base-size-24), 36rem);
-    padding-block: var(--base-size-24);
-  }
-
-  .profile-card {
-    padding: var(--base-size-20);
-  }
 }
 </style>

@@ -5,7 +5,10 @@ import type { ScreenShareState } from '../domain/screen-share.ts'
 import type { MicrophoneState } from '../domain/voice.ts'
 
 const props = defineProps<{
+  connected: boolean
+  connectionLabel: string
   displayName: string
+  layout?: 'bar' | 'panel'
   microphoneState: MicrophoneState
   screenShareState: ScreenShareState
 }>()
@@ -40,15 +43,15 @@ function screenShareTooltip(): string {
 </script>
 
 <template>
-  <footer class="voice-controls" aria-label="Room controls">
+  <footer class="voice-controls" :class="{ 'voice-controls--panel': layout === 'panel' }" aria-label="Current call">
     <div class="voice-controls__identity">
       <Avatar :name="displayName" size="sm" />
-      <div class="voice-controls__user">
-        <strong>{{ displayName }}</strong>
-        <span :class="{ 'voice-controls__status--muted': microphoneState !== 'enabled' }">
-          {{ microphoneState === 'enabled' ? 'Voice connected' : 'Microphone off' }}
+      <span class="voice-controls__user">
+        <strong :title="displayName">{{ displayName }}</strong>
+        <span :class="{ 'voice-controls__status--muted': !connected || microphoneState !== 'enabled' }" role="status">
+          {{ connected ? (microphoneState === 'enabled' ? 'Voice connected' : 'Microphone off') : connectionLabel }}
         </span>
-      </div>
+      </span>
     </div>
 
     <div class="voice-controls__actions">
@@ -112,7 +115,7 @@ function screenShareTooltip(): string {
           :aria-label="screenShareState === 'sharing' ? 'Stop screen sharing' : 'Share screen'"
           :aria-pressed="screenShareState === 'sharing'"
           :aria-busy="screenShareState === 'requesting'"
-          :disabled="screenShareState === 'requesting'"
+          :disabled="!connected || screenShareState === 'requesting'"
           @click="emit('toggleScreenShare')"
         >
           <svg
@@ -155,6 +158,7 @@ function screenShareTooltip(): string {
 }
 
 .voice-controls {
+  container: voice-controls / inline-size;
   justify-content: space-between;
   gap: var(--base-size-8);
   min-height: calc(var(--control-xlarge-size) + var(--base-size-8));
@@ -165,7 +169,12 @@ function screenShareTooltip(): string {
 
 .voice-controls__identity {
   min-width: 0;
+  flex: 1;
   gap: var(--base-size-8);
+  border-radius: var(--border-radius-medium);
+  padding: var(--base-size-4);
+  color: var(--fg-color-default);
+  text-align: left;
 }
 
 .voice-controls__user {
@@ -195,8 +204,30 @@ function screenShareTooltip(): string {
 }
 
 .voice-controls__actions {
-  flex: none;
+  flex: 0 0 auto;
+  justify-content: flex-end;
   gap: var(--base-size-4);
+}
+
+.voice-controls--panel {
+  min-height: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--base-size-4);
+  padding: var(--base-size-8);
+}
+
+.voice-controls--panel .voice-controls__actions {
+  justify-content: space-between;
+}
+
+.voice-controls--panel .voice-controls__identity {
+  padding: 0;
+}
+
+.voice-controls--panel .control-button {
+  width: var(--base-size-44);
+  height: var(--base-size-44);
 }
 
 .control-button {
@@ -287,6 +318,33 @@ function screenShareTooltip(): string {
 
   .control-button__spinner {
     animation-duration: 1.6s;
+  }
+}
+
+@container application (inline-size < 40rem) {
+  .voice-controls {
+    padding-bottom: max(var(--base-size-8), env(safe-area-inset-bottom));
+  }
+
+  .control-button {
+    width: var(--base-size-44);
+    height: var(--base-size-44);
+  }
+
+  .control-button svg {
+    width: var(--base-size-20);
+    height: var(--base-size-20);
+  }
+}
+
+@container voice-controls (inline-size < 34rem) {
+  .voice-controls:not(.voice-controls--panel) .voice-controls__actions {
+    flex: none;
+  }
+
+  .voice-controls:not(.voice-controls--panel) .control-button {
+    width: var(--base-size-44);
+    height: var(--base-size-44);
   }
 }
 </style>
