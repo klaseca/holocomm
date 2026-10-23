@@ -156,7 +156,7 @@ aube run lint
 aube run typecheck
 aube run test
 aube run build
-docker build -t holocomm .
+docker build -t klaseca/holocomm .
 ```
 
 Tests live next to the code they cover. The backend suite includes real Node WebSocket

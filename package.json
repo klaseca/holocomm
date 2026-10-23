@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "Voice rooms without accounts or saved history",
+  "engines": {
+    "node": ">=24.22.1"
+  },
   "scripts": {
     "dev": "aubr --parallel -F @holocomm/backend -F @holocomm/frontend dev",
     "dev:tokens": "aubr -F @holocomm/design-tokens dev",
@@ -19,14 +22,9 @@
     "typescript": "catalog:"
   },
   "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": ">=24.18.0"
-    },
     "packageManager": {
       "name": "aube",
-      "version": ">=2.2.0",
-      "onFail": "warn"
+      "version": ">=2.8.0"
     }
   }
 }
