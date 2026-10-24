@@ -1,5 +1,5 @@
 ARG NODE_IMAGE=node:24.22.1-alpine3.24
-ARG AUBE_VERSION=2.2.0
+ARG AUBE_VERSION=2.8.1
 
 FROM ${NODE_IMAGE} AS package-manager
 
