@@ -28,6 +28,7 @@ describe('createHttpApp', () => {
 
     expect(response.status).toBe(200)
     expect(response.headers.get('content-security-policy')).toContain('default-src \'self\'')
+    expect(response.headers.get('content-security-policy')).toContain('script-src \'self\' \'wasm-unsafe-eval\'')
     expect(response.headers.get('permissions-policy')).toContain('microphone=(self)')
     expect(response.headers.get('strict-transport-security')).toBeTruthy()
     expect(response.headers.get('x-content-type-options')).toBe('nosniff')

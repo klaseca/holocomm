@@ -20,7 +20,7 @@ export function createHttpApp(config: AppConfig, logger: AppLogger) {
       imgSrc: ['\'self\'', 'data:'],
       mediaSrc: ['\'self\'', 'blob:'],
       objectSrc: ['\'none\''],
-      scriptSrc: ['\'self\''],
+      scriptSrc: ['\'self\'', '\'wasm-unsafe-eval\''],
       styleSrc: ['\'self\'', '\'unsafe-inline\''],
       workerSrc: ['\'self\'', 'blob:'],
     },

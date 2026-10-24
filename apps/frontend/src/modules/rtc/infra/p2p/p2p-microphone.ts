@@ -6,11 +6,14 @@ import {
   type P2pMediaPeer,
   stopStream,
 } from './p2p-media-utils.ts'
+import { Rnnoise } from './rnnoise.ts'
 
 export class P2pMicrophone {
-  private trackValue: MediaStreamTrack | undefined
+  private captureStream: MediaStream | undefined
 
   private stream: MediaStream | undefined
+
+  private suppression = new Rnnoise()
 
   private acquisition = 0
 
@@ -39,17 +42,15 @@ export class P2pMicrophone {
   }
 
   get track(): MediaStreamTrack | undefined {
-    return this.trackValue
+    return this.stream?.getAudioTracks()[0]
   }
 
   async close(): Promise<void> {
     ++this.acquisition
     this.active = false
     this.enabled = false
-    this.trackValue?.stop()
-    this.trackValue = undefined
-    this.stream = undefined
-    this.requestedSettings = undefined
+    this.releaseCapture()
+    this.suppression = new Rnnoise()
     this.emitStream(undefined)
     this.emitState('off')
   }
@@ -64,8 +65,15 @@ export class P2pMicrophone {
     this.active = true
     this.enabled = true
 
-    if (this.trackValue?.readyState === 'live') {
-      this.trackValue.enabled = true
+    const captureTrack = this.captureStream?.getAudioTracks()[0]
+
+    if (captureTrack !== undefined) {
+      captureTrack.enabled = true
+    }
+
+    if (this.track?.readyState === 'live') {
+      this.track.enabled = true
+
       this.emitStream(this.stream)
       this.emitState('enabled')
 
@@ -80,8 +88,14 @@ export class P2pMicrophone {
   disable(): void {
     this.enabled = false
 
-    if (this.trackValue !== undefined) {
-      this.trackValue.enabled = false
+    if (this.track !== undefined) {
+      this.track.enabled = false
+    }
+
+    const captureTrack = this.captureStream?.getAudioTracks()[0]
+
+    if (captureTrack !== undefined) {
+      captureTrack.enabled = false
     }
 
     if (this.active) {
@@ -104,44 +118,38 @@ export class P2pMicrophone {
   private async updateCapture(): Promise<void> {
     const acquisition = this.acquisition
 
-    // Serialize captures: Chromium can reuse a still-open source's old processing settings.
     const update = async () => {
-      if (!this.active || acquisition !== this.acquisition) {
+      if (!this.isCurrent(acquisition) || this.hasRequestedSettings()) {
         return
       }
 
-      const track = this.trackValue
-
-      if (track?.readyState === 'live') {
-        if (this.hasRequestedSettings()) {
+      try {
+        await this.configure(this.settings().voice, acquisition)
+      } catch (error) {
+        if (!this.isCurrent(acquisition)) {
           return
         }
 
-        const settings = this.settings().voice
+        this.releaseCapture()
+        this.active = false
+        this.emitStream(undefined)
 
-        let applied = false
+        const denied = error instanceof DOMException
+          && (error.name === 'NotAllowedError' || error.name === 'SecurityError')
 
-        try {
-          await applyTrackConstraints(track, this.constraints(settings))
-          applied = this.matchesSettings(track, settings)
-        } catch {
-          // Some processing changes require a new capture source.
-        }
+        const microphoneError = error instanceof MicrophoneAccessError
+          ? error
+          : new MicrophoneAccessError(
+              denied ? 'denied' : 'unavailable',
+              denied ? 'Microphone permission was denied' : 'Microphone is unavailable',
+            )
 
-        if (!this.active || acquisition !== this.acquisition) {
-          return
-        }
-
-        if (applied && track.readyState === 'live') {
-          this.requestedSettings = settings
-
-          return
-        }
+        this.emitState(microphoneError.reason === 'denied' ? 'denied' : 'error')
+        throw microphoneError
       }
-
-      await this.acquire(acquisition)
     }
 
+    // Keep processing changes and capture replacement in order.
     const operation = this.operation?.then(update, update) ?? update()
 
     this.operation = operation
@@ -149,17 +157,36 @@ export class P2pMicrophone {
     return operation
   }
 
-  private async acquire(acquisition: number): Promise<void> {
-    const settings = this.settings().voice
+  private async configure(settings: RtcMediaSettings['voice'], acquisition: number): Promise<void> {
+    const track = this.captureStream?.getAudioTracks()[0]
 
-    const restarting = this.trackValue !== undefined
+    const constraints = this.constraints(settings)
+
+    if (track?.readyState === 'live') {
+      let applied = false
+
+      try {
+        await applyTrackConstraints(track, constraints)
+        applied = this.matchesSettings(track, settings)
+      } catch {
+        // Some processing changes require a new capture source.
+      }
+
+      if (!this.isCurrent(acquisition)) {
+        return
+      }
+
+      if (applied && track.readyState === 'live') {
+        await this.publish(settings, acquisition)
+
+        return
+      }
+    }
+
+    const restarting = this.captureStream !== undefined
 
     // Chromium can reuse the old processing settings while its source is open.
-    // Release it before capturing again when applyConstraints was insufficient.
-    this.trackValue?.stop()
-    this.trackValue = undefined
-    this.stream = undefined
-    this.requestedSettings = undefined
+    this.releaseCapture()
 
     if (restarting) {
       this.emitStream(undefined)
@@ -167,33 +194,72 @@ export class P2pMicrophone {
       this.emitState('requesting')
     }
 
-    let acquiredStream: MediaStream | undefined
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: constraints, video: false })
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: this.constraints(settings),
-        video: false,
-      })
+    if (!this.isCurrent(acquisition)) {
+      stopStream(stream)
 
-      acquiredStream = stream
+      return
+    }
 
-      if (acquisition !== this.acquisition) {
-        stopStream(stream)
+    this.captureStream = stream
+
+    const captureTrack = stream.getAudioTracks()[0]
+
+    if (captureTrack === undefined) {
+      throw new MicrophoneAccessError('unavailable', 'No microphone track was provided')
+    }
+
+    captureTrack.enabled = this.enabled
+
+    await this.publish(settings, acquisition)
+  }
+
+  private async publish(settings: RtcMediaSettings['voice'], acquisition: number): Promise<void> {
+    const capture = this.captureStream
+
+    if (capture === undefined) {
+      return
+    }
+
+    let stream = capture
+
+    if (this.shouldUseRnnoise(settings)) {
+      const suppression = this.suppression
+
+      try {
+        stream = suppression.stream ?? await suppression.start(capture, () => {
+          if (this.suppression !== suppression || !this.isCurrent(acquisition)) {
+            return
+          }
+
+          this.requestedSettings = undefined
+          void this.updateCapture().catch(() => undefined)
+        })
+      } catch {
+        if (!this.isCurrent(acquisition)) {
+          return
+        }
+
+        await this.configure(settings, acquisition)
 
         return
       }
+    }
 
+    if (!this.isCurrent(acquisition)) {
+      return
+    }
+
+    if (stream !== this.stream) {
       const track = stream.getAudioTracks()[0]
 
       if (track === undefined) {
-        stopStream(stream)
         throw new MicrophoneAccessError('unavailable', 'No microphone track was provided')
       }
 
-      this.trackValue = track
-      this.stream = stream
-      this.requestedSettings = settings
       track.enabled = this.enabled
+      this.stream = stream
       await Promise.all([...this.peers()].map(async peer => (
         peer.microphoneSender?.replaceTrack(track)
       )))
@@ -201,70 +267,60 @@ export class P2pMicrophone {
         applySenderBitrate(peer.microphoneSender, this.settings().voice.maxBitrate)
       )))
 
-      if (acquisition !== this.acquisition) {
-        if (this.trackValue === track) {
-          this.trackValue = undefined
-          this.stream = undefined
-        }
-
-        stopStream(stream)
-
+      if (!this.isCurrent(acquisition)) {
         return
       }
 
       this.emitStream(stream)
       this.emitState(this.enabled ? 'enabled' : 'muted')
-    } catch (error) {
-      if (acquisition !== this.acquisition) {
-        acquiredStream && stopStream(acquiredStream)
-
-        return
-      }
-
-      if (acquiredStream != null) {
-        if (this.stream === acquiredStream) {
-          this.trackValue = undefined
-          this.stream = undefined
-          this.requestedSettings = undefined
-        }
-
-        stopStream(acquiredStream)
-      }
-
-      const denied = error instanceof DOMException
-        && (error.name === 'NotAllowedError' || error.name === 'SecurityError')
-
-      const microphoneError = error instanceof MicrophoneAccessError
-        ? error
-        : new MicrophoneAccessError(
-            denied ? 'denied' : 'unavailable',
-            denied ? 'Microphone permission was denied' : 'Microphone is unavailable',
-          )
-
-      this.active = false
-      this.emitState(microphoneError.reason === 'denied' ? 'denied' : 'error')
-      throw microphoneError
     }
+
+    if (!this.shouldUseRnnoise(settings)) {
+      this.suppression.stop()
+    }
+
+    this.requestedSettings = settings
+  }
+
+  private releaseCapture(): void {
+    this.suppression.stop()
+
+    if (this.captureStream !== undefined) {
+      stopStream(this.captureStream)
+    }
+
+    this.captureStream = undefined
+    this.stream = undefined
+    this.requestedSettings = undefined
+  }
+
+  private isCurrent(acquisition: number): boolean {
+    return this.active && acquisition === this.acquisition
   }
 
   private hasRequestedSettings(): boolean {
     const settings = this.settings().voice
 
-    return this.requestedSettings?.autoGainControl === settings.autoGainControl
+    return this.track?.readyState === 'live'
+      && this.captureStream?.getAudioTracks()[0]?.readyState === 'live'
+      && this.requestedSettings?.autoGainControl === settings.autoGainControl
       && this.requestedSettings.echoCancellation === settings.echoCancellation
       && this.requestedSettings.noiseSuppression === settings.noiseSuppression
+  }
+
+  private shouldUseRnnoise(settings: RtcMediaSettings['voice']): boolean {
+    return settings.noiseSuppression && !this.suppression.hasFailed && Rnnoise.isSupported
   }
 
   private matchesSettings(track: MediaStreamTrack, settings: RtcMediaSettings['voice']): boolean {
     const actual = track.getSettings()
 
-    // Unreported properties cannot be verified and must not force a restart.
     return (actual.autoGainControl === undefined
       || actual.autoGainControl === settings.autoGainControl)
     && (actual.echoCancellation === undefined
       || Boolean(actual.echoCancellation) === settings.echoCancellation)
     && (actual.noiseSuppression === undefined
-      || actual.noiseSuppression === settings.noiseSuppression)
+      || actual.noiseSuppression === this.constraints(settings).noiseSuppression)
   }
 
   private constraints(settings: RtcMediaSettings['voice']): MediaTrackConstraints {
@@ -272,7 +328,7 @@ export class P2pMicrophone {
       autoGainControl: settings.autoGainControl,
       channelCount: { ideal: 1 },
       echoCancellation: settings.echoCancellation,
-      noiseSuppression: settings.noiseSuppression,
+      noiseSuppression: settings.noiseSuppression && !this.shouldUseRnnoise(settings),
       sampleRate: { ideal: 48_000 },
     }
   }
