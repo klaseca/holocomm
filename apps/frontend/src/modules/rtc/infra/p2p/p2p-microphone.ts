@@ -14,6 +14,14 @@ export class P2pMicrophone {
 
   private acquisition = 0
 
+  private active = false
+
+  private enabled = false
+
+  private requestedSettings: RtcMediaSettings['voice'] | undefined
+
+  private operation: Promise<void> | undefined
+
   private readonly stateListeners = new Set<(state: MicrophoneState) => void>()
 
   private readonly streamListeners = new Set<(stream: MediaStream | undefined) => void>()
@@ -36,36 +44,134 @@ export class P2pMicrophone {
 
   async close(): Promise<void> {
     ++this.acquisition
+    this.active = false
+    this.enabled = false
     this.trackValue?.stop()
     this.trackValue = undefined
     this.stream = undefined
+    this.requestedSettings = undefined
     this.emitStream(undefined)
     this.emitState('off')
   }
 
   async applySettings(): Promise<void> {
-    if (this.trackValue?.readyState === 'live') {
-      await applyTrackConstraints(this.trackValue, this.constraints())
+    if (this.active) {
+      await this.updateCapture()
     }
   }
 
   async enable(): Promise<void> {
+    this.active = true
+    this.enabled = true
+
     if (this.trackValue?.readyState === 'live') {
       this.trackValue.enabled = true
       this.emitStream(this.stream)
       this.emitState('enabled')
 
-      return
+      if (this.hasRequestedSettings()) {
+        return
+      }
     }
 
-    const acquisition = ++this.acquisition
+    await this.updateCapture()
+  }
+
+  disable(): void {
+    this.enabled = false
+
+    if (this.trackValue !== undefined) {
+      this.trackValue.enabled = false
+    }
+
+    if (this.active) {
+      this.emitState('muted')
+    }
+  }
+
+  subscribeState(listener: (state: MicrophoneState) => void): () => void {
+    this.stateListeners.add(listener)
+
+    return () => this.stateListeners.delete(listener)
+  }
+
+  subscribeStream(listener: (stream: MediaStream | undefined) => void): () => void {
+    this.streamListeners.add(listener)
+
+    return () => this.streamListeners.delete(listener)
+  }
+
+  private async updateCapture(): Promise<void> {
+    const acquisition = this.acquisition
+
+    // Serialize captures: Chromium can reuse a still-open source's old processing settings.
+    const update = async () => {
+      if (!this.active || acquisition !== this.acquisition) {
+        return
+      }
+
+      const track = this.trackValue
+
+      if (track?.readyState === 'live') {
+        if (this.hasRequestedSettings()) {
+          return
+        }
+
+        const settings = this.settings().voice
+
+        let applied = false
+
+        try {
+          await applyTrackConstraints(track, this.constraints(settings))
+          applied = this.matchesSettings(track, settings)
+        } catch {
+          // Some processing changes require a new capture source.
+        }
+
+        if (!this.active || acquisition !== this.acquisition) {
+          return
+        }
+
+        if (applied && track.readyState === 'live') {
+          this.requestedSettings = settings
+
+          return
+        }
+      }
+
+      await this.acquire(acquisition)
+    }
+
+    const operation = this.operation?.then(update, update) ?? update()
+
+    this.operation = operation
+
+    return operation
+  }
+
+  private async acquire(acquisition: number): Promise<void> {
+    const settings = this.settings().voice
+
+    const restarting = this.trackValue !== undefined
+
+    // Chromium can reuse the old processing settings while its source is open.
+    // Release it before capturing again when applyConstraints was insufficient.
+    this.trackValue?.stop()
+    this.trackValue = undefined
+    this.stream = undefined
+    this.requestedSettings = undefined
+
+    if (restarting) {
+      this.emitStream(undefined)
+    } else {
+      this.emitState('requesting')
+    }
 
     let acquiredStream: MediaStream | undefined
 
-    this.emitState('requesting')
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: this.constraints(),
+        audio: this.constraints(settings),
         video: false,
       })
 
@@ -86,6 +192,8 @@ export class P2pMicrophone {
 
       this.trackValue = track
       this.stream = stream
+      this.requestedSettings = settings
+      track.enabled = this.enabled
       await Promise.all([...this.peers()].map(async peer => (
         peer.microphoneSender?.replaceTrack(track)
       )))
@@ -105,7 +213,7 @@ export class P2pMicrophone {
       }
 
       this.emitStream(stream)
-      this.emitState('enabled')
+      this.emitState(this.enabled ? 'enabled' : 'muted')
     } catch (error) {
       if (acquisition !== this.acquisition) {
         acquiredStream && stopStream(acquiredStream)
@@ -117,6 +225,7 @@ export class P2pMicrophone {
         if (this.stream === acquiredStream) {
           this.trackValue = undefined
           this.stream = undefined
+          this.requestedSettings = undefined
         }
 
         stopStream(acquiredStream)
@@ -132,36 +241,38 @@ export class P2pMicrophone {
             denied ? 'Microphone permission was denied' : 'Microphone is unavailable',
           )
 
+      this.active = false
       this.emitState(microphoneError.reason === 'denied' ? 'denied' : 'error')
       throw microphoneError
     }
   }
 
-  disable(): void {
-    if (this.trackValue !== undefined) {
-      this.trackValue.enabled = false
-      this.emitState('muted')
-    }
+  private hasRequestedSettings(): boolean {
+    const settings = this.settings().voice
+
+    return this.requestedSettings?.autoGainControl === settings.autoGainControl
+      && this.requestedSettings.echoCancellation === settings.echoCancellation
+      && this.requestedSettings.noiseSuppression === settings.noiseSuppression
   }
 
-  subscribeState(listener: (state: MicrophoneState) => void): () => void {
-    this.stateListeners.add(listener)
+  private matchesSettings(track: MediaStreamTrack, settings: RtcMediaSettings['voice']): boolean {
+    const actual = track.getSettings()
 
-    return () => this.stateListeners.delete(listener)
+    // Unreported properties cannot be verified and must not force a restart.
+    return (actual.autoGainControl === undefined
+      || actual.autoGainControl === settings.autoGainControl)
+    && (actual.echoCancellation === undefined
+      || Boolean(actual.echoCancellation) === settings.echoCancellation)
+    && (actual.noiseSuppression === undefined
+      || actual.noiseSuppression === settings.noiseSuppression)
   }
 
-  subscribeStream(listener: (stream: MediaStream | undefined) => void): () => void {
-    this.streamListeners.add(listener)
-
-    return () => this.streamListeners.delete(listener)
-  }
-
-  private constraints(): MediaTrackConstraints {
+  private constraints(settings: RtcMediaSettings['voice']): MediaTrackConstraints {
     return {
-      autoGainControl: this.settings().voice.autoGainControl,
+      autoGainControl: settings.autoGainControl,
       channelCount: { ideal: 1 },
-      echoCancellation: this.settings().voice.echoCancellation,
-      noiseSuppression: this.settings().voice.noiseSuppression,
+      echoCancellation: settings.echoCancellation,
+      noiseSuppression: settings.noiseSuppression,
       sampleRate: { ideal: 48_000 },
     }
   }
