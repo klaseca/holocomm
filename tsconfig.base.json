@@ -6,6 +6,7 @@
     "strict": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
+    "useUnknownInCatchVariables": true,
     "noEmit": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
