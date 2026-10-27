@@ -5,6 +5,7 @@
   background: var(--bg-color-default);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #app {
