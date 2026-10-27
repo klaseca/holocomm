@@ -37,6 +37,9 @@ describe('local media settings', () => {
       voiceQuality: 'high',
     })
 
+    const stored: unknown = JSON.parse(storage.value ?? 'null')
+
+    expect(stored).toMatchObject({ version: 1 })
     expect(createLocalMediaSettings(storage).preferences.value).toEqual(settings.preferences.value)
     expect(resolveMediaPreferences(settings.preferences.value)).toEqual({
       screen: { width: 2560, height: 1440, frameRate: 60, maxBitrate: 14_000_000 },
@@ -105,7 +108,7 @@ describe('local media settings', () => {
 
     const { screenAudioRestrictOwnAudio: _restriction, ...previous } = DEFAULT_MEDIA_PREFERENCES
 
-    storage.value = JSON.stringify({ version: 3, ...previous, screenAudioEchoCancellation: true })
+    storage.value = JSON.stringify({ version: 1, ...previous, screenAudioEchoCancellation: true })
 
     expect(createLocalMediaSettings(storage).preferences.value).toEqual({
       ...DEFAULT_MEDIA_PREFERENCES,

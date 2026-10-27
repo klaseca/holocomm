@@ -1,28 +1,14 @@
+import Type from 'typebox'
+import { Check } from 'typebox/value'
 import { readonly, type Ref, ref } from 'vue'
 import { Context } from 'vue-context-ts'
 
-export type ScreenQuality = '720p' | '1080p' | '1440p' | '2160p'
-export type ScreenFrameRate = 15 | 30 | 60
-export type ScreenBitrate = '1-mbps' | '2.5-mbps' | '5-mbps' | '8-mbps' | '14-mbps'
-export type ScreenAudioQuality = 'data-saver' | 'balanced' | 'high'
-export type VoiceQuality = 'data-saver' | 'balanced' | 'high'
-
-export interface MediaPreferences {
-  readonly autoGainControl: boolean
-  readonly echoCancellation: boolean
-  readonly noiseSuppression: boolean
-  readonly screenAudioAutoGainControl: boolean
-  readonly screenAudioEnabled: boolean
-  readonly screenAudioEchoCancellation: boolean
-  readonly screenAudioNoiseSuppression: boolean
-  readonly screenAudioQuality: ScreenAudioQuality
-  readonly screenAudioRestrictOwnAudio: boolean
-  readonly screenAudioStereo: boolean
-  readonly screenQuality: ScreenQuality
-  readonly screenFrameRate: ScreenFrameRate
-  readonly screenBitrate: ScreenBitrate
-  readonly voiceQuality: VoiceQuality
-}
+export type MediaPreferences = Readonly<Type.Static<typeof MediaPreferencesSchema>>
+export type ScreenQuality = MediaPreferences['screenQuality']
+export type ScreenFrameRate = MediaPreferences['screenFrameRate']
+export type ScreenBitrate = MediaPreferences['screenBitrate']
+export type ScreenAudioQuality = MediaPreferences['screenAudioQuality']
+export type VoiceQuality = MediaPreferences['voiceQuality']
 
 export interface RtcMediaSettings {
   readonly screen: {
@@ -67,8 +53,6 @@ export const SCREEN_QUALITY_OPTIONS = [
 
 export const SCREEN_FRAME_RATE_OPTIONS = [15, 30, 60] as const
 
-const screenFrameRateValues: readonly unknown[] = SCREEN_FRAME_RATE_OPTIONS
-
 export const SCREEN_BITRATE_OPTIONS = [
   { value: '1-mbps', label: '1 Mbps', description: 'Low bandwidth' },
   { value: '2.5-mbps', label: '2.5 Mbps', description: 'Good for 720p' },
@@ -88,6 +72,28 @@ export const VOICE_QUALITY_OPTIONS = [
   { value: 'balanced', label: 'Balanced', description: 'Up to 64 kbps' },
   { value: 'high', label: 'High', description: 'Up to 128 kbps' },
 ] as const
+
+const MediaPreferencesSchema = Type.Object({
+  autoGainControl: Type.Boolean(),
+  echoCancellation: Type.Boolean(),
+  noiseSuppression: Type.Boolean(),
+  screenAudioAutoGainControl: Type.Boolean(),
+  screenAudioEnabled: Type.Boolean(),
+  screenAudioEchoCancellation: Type.Boolean(),
+  screenAudioNoiseSuppression: Type.Boolean(),
+  screenAudioQuality: Type.Enum(SCREEN_AUDIO_QUALITY_OPTIONS.map(option => option.value)),
+  screenAudioRestrictOwnAudio: Type.Boolean(),
+  screenAudioStereo: Type.Boolean(),
+  screenQuality: Type.Enum(SCREEN_QUALITY_OPTIONS.map(option => option.value)),
+  screenFrameRate: Type.Enum(SCREEN_FRAME_RATE_OPTIONS),
+  screenBitrate: Type.Enum(SCREEN_BITRATE_OPTIONS.map(option => option.value)),
+  voiceQuality: Type.Enum(VOICE_QUALITY_OPTIONS.map(option => option.value)),
+})
+
+const StoredMediaPreferencesSchema = Type.Intersect([
+  Type.Record(Type.String(), Type.Unknown()),
+  Type.Object({ version: Type.Literal(1) }),
+])
 
 export const DEFAULT_MEDIA_PREFERENCES: MediaPreferences = {
   autoGainControl: true,
@@ -144,13 +150,9 @@ export function createLocalMediaSettings(storage: MediaSettingsStorage): LocalMe
   const preferences = ref(readPreferences(storage))
 
   function setPreferences(nextPreferences: MediaPreferences): void {
-    if (!isMediaPreferences(nextPreferences)) {
-      return
-    }
-
     preferences.value = { ...nextPreferences }
     try {
-      storage.setItem(STORAGE_KEY, JSON.stringify({ version: 3, ...nextPreferences }))
+      storage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, ...nextPreferences }))
     } catch {
       // Media changes still apply for this tab when persistent storage is unavailable.
     }
@@ -196,10 +198,7 @@ function readPreferences(storage: MediaSettingsStorage): MediaPreferences {
 
     const parsed: unknown = JSON.parse(raw)
 
-    if (
-      !isRecord(parsed)
-      || (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3)
-    ) {
+    if (!Check(StoredMediaPreferencesSchema, parsed)) {
       return DEFAULT_MEDIA_PREFERENCES
     }
 
@@ -227,33 +226,8 @@ function readPreferences(storage: MediaSettingsStorage): MediaPreferences {
       voiceQuality: parsed.voiceQuality,
     }
 
-    return isMediaPreferences(preferences) ? preferences : DEFAULT_MEDIA_PREFERENCES
+    return Check(MediaPreferencesSchema, preferences) ? preferences : DEFAULT_MEDIA_PREFERENCES
   } catch {
     return DEFAULT_MEDIA_PREFERENCES
   }
-}
-
-function isMediaPreferences(value: unknown): value is MediaPreferences {
-  if (!isRecord(value)) {
-    return false
-  }
-
-  return typeof value.autoGainControl === 'boolean'
-    && typeof value.echoCancellation === 'boolean'
-    && typeof value.noiseSuppression === 'boolean'
-    && typeof value.screenAudioAutoGainControl === 'boolean'
-    && typeof value.screenAudioEnabled === 'boolean'
-    && typeof value.screenAudioEchoCancellation === 'boolean'
-    && typeof value.screenAudioNoiseSuppression === 'boolean'
-    && SCREEN_AUDIO_QUALITY_OPTIONS.some(option => option.value === value.screenAudioQuality)
-    && typeof value.screenAudioRestrictOwnAudio === 'boolean'
-    && typeof value.screenAudioStereo === 'boolean'
-    && SCREEN_QUALITY_OPTIONS.some(option => option.value === value.screenQuality)
-    && screenFrameRateValues.includes(value.screenFrameRate)
-    && SCREEN_BITRATE_OPTIONS.some(option => option.value === value.screenBitrate)
-    && VOICE_QUALITY_OPTIONS.some(option => option.value === value.voiceQuality)
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
