@@ -7,7 +7,6 @@ export interface P2pMediaPeer {
 export async function applySenderBitrate(
   sender: RTCRtpSender | undefined,
   maxBitrate: number,
-  degradationPreference?: RTCDegradationPreference,
 ): Promise<void> {
   if (
     sender == null
@@ -24,10 +23,6 @@ export async function applySenderBitrate(
   }
 
   parameters.encodings[0].maxBitrate = maxBitrate
-
-  if (degradationPreference != null) {
-    parameters.degradationPreference = degradationPreference
-  }
 
   await sender.setParameters(parameters)
 }

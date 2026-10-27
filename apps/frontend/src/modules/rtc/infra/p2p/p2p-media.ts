@@ -95,7 +95,6 @@ export class P2pMedia {
       applySenderBitrate(
         peer.screenSender,
         this.mediaSettings.screen.maxBitrate,
-        'maintain-framerate',
       ),
       applySenderBitrate(peer.screenAudioSender, this.mediaSettings.screenAudio.maxBitrate),
     ])

@@ -117,7 +117,6 @@ export class P2pScreenShare {
         applySenderBitrate(
           peer.screenSender,
           this.settings().screen.maxBitrate,
-          'maintain-framerate',
         )
       )))
 
