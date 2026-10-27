@@ -206,7 +206,10 @@ const callEvents = {
       </IconButton>
     </header>
   </dialog>
-  <MediaSettingsDialog v-model="mediaSettingsOpen" />
+  <MediaSettingsDialog
+    v-model="mediaSettingsOpen"
+    :screen-stream="session.localScreenStream.value"
+  />
 </template>
 
 <style scoped>

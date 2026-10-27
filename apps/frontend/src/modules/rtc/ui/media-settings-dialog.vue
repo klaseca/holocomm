@@ -4,6 +4,11 @@ import { computed, ref, watch } from 'vue'
 import { Button, Dialog, Select, Switch } from '#/ui/primitives'
 
 import { localMediaSettingsContext, SCREEN_AUDIO_QUALITY_OPTIONS, SCREEN_BITRATE_OPTIONS, SCREEN_FRAME_RATE_OPTIONS, SCREEN_QUALITY_OPTIONS, type ScreenAudioQuality, type ScreenBitrate, type ScreenFrameRate, type ScreenQuality, VOICE_QUALITY_OPTIONS, type VoiceQuality } from '../application/media-settings.ts'
+import { isSupportsOwnAudioRestriction } from '../infra/screen-capture-capabilities.ts'
+
+const props = defineProps<{
+  screenStream?: MediaStream
+}>()
 
 const open = defineModel<boolean>({ default: false })
 
@@ -32,6 +37,43 @@ const screenAudioNoiseSuppression = ref(
 const screenAudioQuality = ref<ScreenAudioQuality>(
   mediaSettings.preferences.value.screenAudioQuality,
 )
+
+const screenAudioRestrictOwnAudio = ref(
+  mediaSettings.preferences.value.screenAudioRestrictOwnAudio,
+)
+
+const ownAudioRestrictionSupported = isSupportsOwnAudioRestriction()
+
+const ownAudioRestrictionAvailable = computed(() => {
+  const track = props.screenStream?.getAudioTracks()[0]
+
+  return track?.readyState === 'live' && isSupportsOwnAudioRestriction(track)
+})
+
+const ownAudioRestrictionDescription = computed(() => {
+  if (!ownAudioRestrictionSupported) {
+    return 'This browser cannot exclude call audio. You can use echo cancellation instead.'
+  }
+
+  const track = props.screenStream?.getAudioTracks()[0]
+
+  if (track?.readyState !== 'live') {
+    return 'Start sharing with audio to check availability.'
+  }
+
+  if (!ownAudioRestrictionAvailable.value) {
+    return 'Unavailable for this source or device. Use echo cancellation instead.'
+  }
+
+  const settings = track.getSettings()
+
+  if (screenAudioRestrictOwnAudio.value
+    && (!('restrictOwnAudio' in settings) || settings.restrictOwnAudio !== true)) {
+    return 'Not enabled for the current stream. Changing this requires a new screen selection.'
+  }
+
+  return 'Requests exclusion of audio from this page when sharing starts. Works independently of echo cancellation.'
+})
 
 const screenAudioStereo = ref(mediaSettings.preferences.value.screenAudioStereo)
 
@@ -70,6 +112,7 @@ watch(open, (isOpen) => {
   screenAudioNoiseSuppression.value
     = mediaSettings.preferences.value.screenAudioNoiseSuppression
   screenAudioQuality.value = mediaSettings.preferences.value.screenAudioQuality
+  screenAudioRestrictOwnAudio.value = mediaSettings.preferences.value.screenAudioRestrictOwnAudio
   screenAudioStereo.value = mediaSettings.preferences.value.screenAudioStereo
   screenQuality.value = mediaSettings.preferences.value.screenQuality
   screenFrameRate.value = mediaSettings.preferences.value.screenFrameRate
@@ -87,6 +130,7 @@ function save(): void {
     screenAudioEchoCancellation: screenAudioEchoCancellation.value,
     screenAudioNoiseSuppression: screenAudioNoiseSuppression.value,
     screenAudioQuality: screenAudioQuality.value,
+    screenAudioRestrictOwnAudio: screenAudioRestrictOwnAudio.value,
     screenAudioStereo: screenAudioStereo.value,
     screenQuality: screenQuality.value,
     screenFrameRate: screenFrameRate.value,
@@ -135,7 +179,7 @@ function save(): void {
           <Switch
             v-model="screenAudioEnabled"
             label="Share system audio"
-            description="Requests audio when sharing starts. If sharing is already active, restart it to enable audio."
+            description="Requests audio from the screen, window, or tab you choose to share."
           />
           <template v-if="screenAudioEnabled">
             <label>
@@ -152,9 +196,16 @@ function save(): void {
               description="Preserves spatial separation for music, games, and video."
             />
             <Switch
+              label="Exclude call audio"
+              :description="ownAudioRestrictionDescription"
+              :disabled="!ownAudioRestrictionAvailable"
+              :model-value="ownAudioRestrictionAvailable && screenAudioRestrictOwnAudio"
+              @update:model-value="screenAudioRestrictOwnAudio = $event"
+            />
+            <Switch
               v-model="screenAudioEchoCancellation"
               label="Echo cancellation"
-              description="Reduces feedback when the shared source contains voice or speaker audio."
+              description="Reduces participants' voices returning through shared audio, but may affect music and game sound."
             />
             <Switch
               v-model="screenAudioNoiseSuppression"
@@ -167,6 +218,10 @@ function save(): void {
               description="Normalizes volume, but may reduce the dynamics of shared audio."
             />
           </template>
+          <p>
+            If the browser cannot apply audio capture changes during a stream, saving asks you
+            to choose a screen again. Bitrate changes and muting shared audio do not restart it.
+          </p>
         </div>
         <p>Higher settings use more upload bandwidth and processing power.</p>
       </fieldset>

@@ -16,6 +16,7 @@ export interface MediaPreferences {
   readonly screenAudioEchoCancellation: boolean
   readonly screenAudioNoiseSuppression: boolean
   readonly screenAudioQuality: ScreenAudioQuality
+  readonly screenAudioRestrictOwnAudio: boolean
   readonly screenAudioStereo: boolean
   readonly screenQuality: ScreenQuality
   readonly screenFrameRate: ScreenFrameRate
@@ -36,6 +37,7 @@ export interface RtcMediaSettings {
     readonly echoCancellation: boolean
     readonly maxBitrate: number
     readonly noiseSuppression: boolean
+    readonly restrictOwnAudio: boolean
     readonly stereo: boolean
   }
   readonly voice: {
@@ -96,6 +98,7 @@ export const DEFAULT_MEDIA_PREFERENCES: MediaPreferences = {
   screenAudioEchoCancellation: false,
   screenAudioNoiseSuppression: false,
   screenAudioQuality: 'high',
+  screenAudioRestrictOwnAudio: false,
   screenAudioStereo: true,
   screenQuality: '1080p',
   screenFrameRate: 30,
@@ -169,6 +172,7 @@ export function resolveMediaPreferences(preferences: MediaPreferences): RtcMedia
       echoCancellation: preferences.screenAudioEchoCancellation,
       maxBitrate: screenAudioBitrates[preferences.screenAudioQuality],
       noiseSuppression: preferences.screenAudioNoiseSuppression,
+      restrictOwnAudio: preferences.screenAudioRestrictOwnAudio,
       stereo: preferences.screenAudioStereo,
     },
     voice: {
@@ -213,6 +217,8 @@ function readPreferences(storage: MediaSettingsStorage): MediaPreferences {
         ?? DEFAULT_MEDIA_PREFERENCES.screenAudioNoiseSuppression,
       screenAudioQuality: parsed.screenAudioQuality
         ?? DEFAULT_MEDIA_PREFERENCES.screenAudioQuality,
+      screenAudioRestrictOwnAudio: parsed.screenAudioRestrictOwnAudio
+        ?? DEFAULT_MEDIA_PREFERENCES.screenAudioRestrictOwnAudio,
       screenAudioStereo: parsed.screenAudioStereo
         ?? DEFAULT_MEDIA_PREFERENCES.screenAudioStereo,
       screenQuality: parsed.screenQuality,
@@ -240,6 +246,7 @@ function isMediaPreferences(value: unknown): value is MediaPreferences {
     && typeof value.screenAudioEchoCancellation === 'boolean'
     && typeof value.screenAudioNoiseSuppression === 'boolean'
     && SCREEN_AUDIO_QUALITY_OPTIONS.some(option => option.value === value.screenAudioQuality)
+    && typeof value.screenAudioRestrictOwnAudio === 'boolean'
     && typeof value.screenAudioStereo === 'boolean'
     && SCREEN_QUALITY_OPTIONS.some(option => option.value === value.screenQuality)
     && screenFrameRateValues.includes(value.screenFrameRate)

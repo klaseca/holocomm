@@ -386,6 +386,7 @@ describe('p2pSession', () => {
           echoCancellation: true,
           maxBitrate: 128_000,
           noiseSuppression: true,
+          restrictOwnAudio: false,
           stereo: false,
         },
       },
@@ -410,6 +411,352 @@ describe('p2pSession', () => {
       },
     })
     expect(connections[0]?.senderParameters[2]?.encodings[0]?.maxBitrate).toBe(128_000)
+  })
+
+  test.each(['rejected', 'ignored'] as const)(
+    'requests a new screen when a live audio processing change is %s',
+    async (result) => {
+      const video = createMediaTrack('video')
+
+      const audio = Object.assign(createMediaTrack('audio'), {
+        applyConstraints: result === 'rejected'
+          ? vi.fn().mockRejectedValue(new DOMException('Cannot satisfy constraints', 'OverconstrainedError'))
+          : vi.fn().mockResolvedValue(undefined),
+        getSettings: () => ({ echoCancellation: false }),
+      })
+
+      const nextVideo = createMediaTrack('video')
+
+      const nextAudio = createMediaTrack('audio')
+
+      const first = createDeferredMediaStream([video, audio])
+
+      const next = createDeferredMediaStream([nextVideo, nextAudio])
+
+      first.resolve()
+      next.resolve()
+
+      const getDisplayMedia = vi.fn<typeof navigator.mediaDevices.getDisplayMedia>()
+        .mockReturnValueOnce(first.promise)
+        .mockReturnValueOnce(next.promise)
+
+      vi.stubGlobal('navigator', { mediaDevices: { getDisplayMedia } })
+
+      const session = new P2pSession({ send: () => true }, {})
+
+      const streams: Array<MediaStream | undefined> = []
+
+      session.subscribeLocalScreen(stream => streams.push(stream))
+      await session.joinPeer('bob')
+      await session.startScreenShare()
+      await session.setMediaSettings({
+        ...DEFAULT_RTC_MEDIA_SETTINGS,
+        screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, echoCancellation: true },
+      })
+
+      expect(getDisplayMedia).toHaveBeenCalledTimes(2)
+      expect(video.stop.mock.calls).toHaveLength(1)
+      expect(audio.stop.mock.calls).toHaveLength(1)
+
+      const requestedAudio = getDisplayMedia.mock.calls.at(-1)?.[0]?.audio
+
+      expect(requestedAudio).toMatchObject({ echoCancellation: true })
+      expect(connections[0]?.replacementTracks.slice(-2)).toEqual([nextVideo, nextAudio])
+      expect(streams.map(stream => stream?.getVideoTracks()[0])).toEqual([
+        video,
+        undefined,
+        nextVideo,
+      ])
+      await session.close()
+    },
+  )
+
+  test('keeps a screen capture when audio processing applies live or only bitrate changes', async () => {
+    const video = createMediaTrack('video')
+
+    const audio = Object.assign(createMediaTrack('audio'), {
+      applyConstraints: vi.fn().mockResolvedValue(undefined),
+      getSettings: () => ({ echoCancellation: true, channelCount: 2 }),
+    })
+
+    const stream = createDeferredMediaStream([video, audio])
+
+    stream.resolve()
+
+    const getDisplayMedia = vi.fn().mockReturnValue(stream.promise)
+
+    vi.stubGlobal('navigator', { mediaDevices: { getDisplayMedia } })
+
+    const session = new P2pSession({ send: () => true }, {})
+
+    const settings = {
+      ...DEFAULT_RTC_MEDIA_SETTINGS,
+      screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, echoCancellation: true },
+    }
+
+    await session.joinPeer('bob')
+    await session.startScreenShare()
+    await session.setMediaSettings(settings)
+    await session.setMediaSettings({
+      ...settings,
+      screenAudio: { ...settings.screenAudio, maxBitrate: 128_000 },
+    })
+
+    expect(getDisplayMedia).toHaveBeenCalledTimes(1)
+    expect(audio.applyConstraints.mock.calls).toHaveLength(1)
+    expect(video.stop.mock.calls).toHaveLength(0)
+    expect(audio.stop.mock.calls).toHaveLength(0)
+    expect(connections[0]?.senderParameters[2]?.encodings[0]?.maxBitrate).toBe(128_000)
+    await session.close()
+  })
+
+  test.each([[true, true], [true, false], [false, false]])(
+    'recaptures for own audio restriction only when browser (%s) and source (%s) support it',
+    async (browserSupported, sourceSupported) => {
+      const video = createMediaTrack('video')
+
+      const audio = Object.assign(createMediaTrack('audio'), {
+        getCapabilities: () => ({ restrictOwnAudio: sourceSupported ? [true, false] : [false] }),
+      })
+
+      const first = createDeferredMediaStream([video, audio])
+
+      const next = createDeferredMediaStream([createMediaTrack('video'), createMediaTrack('audio')])
+
+      first.resolve()
+      next.resolve()
+
+      const getDisplayMedia = vi.fn<typeof navigator.mediaDevices.getDisplayMedia>()
+        .mockReturnValueOnce(first.promise)
+        .mockReturnValueOnce(next.promise)
+
+      vi.stubGlobal('navigator', {
+        mediaDevices: {
+          getDisplayMedia,
+          getSupportedConstraints: () => browserSupported ? { restrictOwnAudio: true } : {},
+        },
+      })
+
+      const session = new P2pSession({ send: () => true }, {})
+
+      await session.joinPeer('bob')
+      await session.startScreenShare()
+      await session.setMediaSettings({
+        ...DEFAULT_RTC_MEDIA_SETTINGS,
+        screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, restrictOwnAudio: true },
+      })
+
+      const recaptured = browserSupported && sourceSupported
+
+      expect(getDisplayMedia).toHaveBeenCalledTimes(recaptured ? 2 : 1)
+      expect(video.stop.mock.calls).toHaveLength(recaptured ? 1 : 0)
+      expect(audio.stop.mock.calls).toHaveLength(recaptured ? 1 : 0)
+
+      const constraints = getDisplayMedia.mock.calls.at(-1)?.[0]?.audio
+
+      if (browserSupported) {
+        expect(constraints).toMatchObject({ restrictOwnAudio: recaptured })
+      } else {
+        expect(constraints).not.toHaveProperty('restrictOwnAudio')
+      }
+
+      expect(constraints).toMatchObject({ echoCancellation: false })
+      await session.close()
+    },
+  )
+
+  test('preserves capture-time own audio restriction when applying other audio settings', async () => {
+    const audio = Object.assign(createMediaTrack('audio'), {
+      applyConstraints: vi.fn().mockResolvedValue(undefined),
+      getSettings: () => ({ echoCancellation: true }),
+      getCapabilities: () => ({ restrictOwnAudio: [true, false] }),
+    })
+
+    const stream = createDeferredMediaStream([createMediaTrack('video'), audio])
+
+    stream.resolve()
+
+    const getDisplayMedia = vi.fn().mockReturnValue(stream.promise)
+
+    vi.stubGlobal('navigator', {
+      mediaDevices: {
+        getDisplayMedia,
+        getSupportedConstraints: () => ({ restrictOwnAudio: true }),
+      },
+    })
+
+    const session = new P2pSession({ send: () => true }, {}, {
+      mediaSettings: {
+        ...DEFAULT_RTC_MEDIA_SETTINGS,
+        screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, restrictOwnAudio: true },
+      },
+    })
+
+    await session.startScreenShare()
+    await session.setMediaSettings({
+      ...DEFAULT_RTC_MEDIA_SETTINGS,
+      screenAudio: {
+        ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio,
+        restrictOwnAudio: true,
+        echoCancellation: true,
+      },
+    })
+
+    expect(getDisplayMedia).toHaveBeenCalledTimes(1)
+    expect(audio.applyConstraints.mock.calls[0]?.[0]).toMatchObject({
+      restrictOwnAudio: true,
+      echoCancellation: true,
+    })
+    await session.close()
+  })
+
+  test('toggles captured screen audio without reopening the picker or stopping video', async () => {
+    const video = createMediaTrack('video')
+
+    const audio = createMediaTrack('audio')
+
+    const stream = createDeferredMediaStream([video, audio])
+
+    stream.resolve()
+
+    const getDisplayMedia = vi.fn().mockReturnValue(stream.promise)
+
+    vi.stubGlobal('navigator', { mediaDevices: { getDisplayMedia } })
+
+    const session = new P2pSession({ send: () => true }, {})
+
+    await session.joinPeer('bob')
+    await session.startScreenShare()
+    await session.setMediaSettings({
+      ...DEFAULT_RTC_MEDIA_SETTINGS,
+      screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, enabled: false },
+    })
+
+    expect(audio.enabled).toBe(false)
+    expect(connections[0]?.replacementTracks.at(-1)).toBe(null)
+
+    await session.setMediaSettings(DEFAULT_RTC_MEDIA_SETTINGS)
+
+    expect(audio.enabled).toBe(true)
+    expect(getDisplayMedia).toHaveBeenCalledTimes(1)
+    expect(connections[0]?.replacementTracks.at(-1)).toBe(audio)
+    expect(video.stop.mock.calls).toHaveLength(0)
+    expect(audio.stop.mock.calls).toHaveLength(0)
+
+    audio.end()
+    await session.setMediaSettings(DEFAULT_RTC_MEDIA_SETTINGS)
+
+    expect(getDisplayMedia).toHaveBeenCalledTimes(1)
+    expect(video.stop.mock.calls).toHaveLength(0)
+    await session.close()
+  })
+
+  test('requests a new capture when enabling audio omitted at the start', async () => {
+    const video = createMediaTrack('video')
+
+    const first = createDeferredMediaStream([video])
+
+    const next = createDeferredMediaStream([createMediaTrack('video'), createMediaTrack('audio')])
+
+    first.resolve()
+    next.resolve()
+
+    const getDisplayMedia = vi.fn<typeof navigator.mediaDevices.getDisplayMedia>()
+      .mockReturnValueOnce(first.promise)
+      .mockReturnValueOnce(next.promise)
+
+    vi.stubGlobal('navigator', { mediaDevices: { getDisplayMedia } })
+
+    const session = new P2pSession({ send: () => true }, {}, {
+      mediaSettings: {
+        ...DEFAULT_RTC_MEDIA_SETTINGS,
+        screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, enabled: false },
+      },
+    })
+
+    await session.startScreenShare()
+    await session.setMediaSettings(DEFAULT_RTC_MEDIA_SETTINGS)
+
+    expect(getDisplayMedia).toHaveBeenCalledTimes(2)
+    expect(getDisplayMedia.mock.calls[0]?.[0]?.audio).toBe(false)
+    expect(getDisplayMedia.mock.calls[1]?.[0]?.audio).toMatchObject({ echoCancellation: false })
+    expect(video.stop.mock.calls).toHaveLength(1)
+    await session.close()
+  })
+
+  test('cleans up when replacement screen selection is cancelled', async () => {
+    const video = createMediaTrack('video')
+
+    const audio = Object.assign(createMediaTrack('audio'), {
+      applyConstraints: vi.fn().mockRejectedValue(new DOMException('', 'OverconstrainedError')),
+    })
+
+    const stream = createDeferredMediaStream([video, audio])
+
+    stream.resolve()
+
+    const getDisplayMedia = vi.fn()
+      .mockReturnValueOnce(stream.promise)
+      .mockRejectedValueOnce(new DOMException('Cancelled', 'NotAllowedError'))
+
+    vi.stubGlobal('navigator', { mediaDevices: { getDisplayMedia } })
+
+    const session = new P2pSession({ send: () => true }, {})
+
+    const states: string[] = []
+
+    const streams: Array<MediaStream | undefined> = []
+
+    session.subscribeScreenShare(state => states.push(state))
+    session.subscribeLocalScreen(value => streams.push(value))
+    await session.joinPeer('bob')
+    await session.startScreenShare()
+    await session.setMediaSettings({
+      ...DEFAULT_RTC_MEDIA_SETTINGS,
+      screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, echoCancellation: true },
+    })
+
+    expect(states.at(-1)).toBe('denied')
+    expect(streams.at(-1)).toBeUndefined()
+    expect(video.stop.mock.calls).toHaveLength(1)
+    expect(audio.stop.mock.calls).toHaveLength(1)
+    expect(connections[0]?.replacementTracks.slice(-2)).toEqual([null, null])
+    await session.close()
+  })
+
+  test('does not restart a screen share stopped while audio constraints are pending', async () => {
+    let finishConstraints: (() => void) | undefined
+
+    const audio = Object.assign(createMediaTrack('audio'), {
+      applyConstraints: vi.fn(async () => new Promise<void>((resolve) => {
+        finishConstraints = resolve
+      })),
+      getSettings: () => ({ echoCancellation: false }),
+    })
+
+    const stream = createDeferredMediaStream([createMediaTrack('video'), audio])
+
+    stream.resolve()
+
+    const getDisplayMedia = vi.fn().mockReturnValue(stream.promise)
+
+    vi.stubGlobal('navigator', { mediaDevices: { getDisplayMedia } })
+
+    const session = new P2pSession({ send: () => true }, {})
+
+    await session.startScreenShare()
+
+    const updating = session.setMediaSettings({
+      ...DEFAULT_RTC_MEDIA_SETTINGS,
+      screenAudio: { ...DEFAULT_RTC_MEDIA_SETTINGS.screenAudio, echoCancellation: true },
+    })
+
+    await session.stopScreenShare()
+    finishConstraints?.()
+    await updating
+
+    expect(getDisplayMedia).toHaveBeenCalledTimes(1)
+    expect(audio.stop.mock.calls).toHaveLength(1)
   })
 
   test('cleans up when the browser-native screen sharing control stops', async () => {

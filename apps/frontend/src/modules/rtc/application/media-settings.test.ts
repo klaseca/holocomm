@@ -29,6 +29,7 @@ describe('local media settings', () => {
       screenAudioEchoCancellation: false,
       screenAudioNoiseSuppression: true,
       screenAudioQuality: 'balanced',
+      screenAudioRestrictOwnAudio: true,
       screenAudioStereo: false,
       screenQuality: '1440p',
       screenFrameRate: 60,
@@ -45,6 +46,7 @@ describe('local media settings', () => {
         echoCancellation: false,
         maxBitrate: 128_000,
         noiseSuppression: true,
+        restrictOwnAudio: true,
         stereo: false,
       },
       voice: {
@@ -89,11 +91,26 @@ describe('local media settings', () => {
       screenAudioEchoCancellation: false,
       screenAudioNoiseSuppression: false,
       screenAudioQuality: 'high',
+      screenAudioRestrictOwnAudio: false,
       screenAudioStereo: true,
       screenQuality: '720p',
       screenFrameRate: 15,
       screenBitrate: '5-mbps',
       voiceQuality: 'data-saver',
+    })
+  })
+
+  test('preserves existing settings when own audio restriction has not been stored yet', () => {
+    const storage = new MemoryStorage()
+
+    const { screenAudioRestrictOwnAudio: _restriction, ...previous } = DEFAULT_MEDIA_PREFERENCES
+
+    storage.value = JSON.stringify({ version: 3, ...previous, screenAudioEchoCancellation: true })
+
+    expect(createLocalMediaSettings(storage).preferences.value).toEqual({
+      ...DEFAULT_MEDIA_PREFERENCES,
+      screenAudioEchoCancellation: true,
+      screenAudioRestrictOwnAudio: false,
     })
   })
 })

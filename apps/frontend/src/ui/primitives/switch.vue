@@ -2,10 +2,11 @@
 import { SwitchRoot, SwitchThumb } from 'reka-ui'
 import { useId } from 'vue'
 
-defineProps<{
+withDefaults(defineProps<{
   description?: string
+  disabled?: boolean
   label: string
-}>()
+}>(), { disabled: false })
 
 const model = defineModel<boolean>({ required: true })
 
@@ -13,12 +14,18 @@ const id = useId()
 </script>
 
 <template>
-  <div class="switch-field">
+  <div class="switch-field" :data-disabled="disabled ? '' : undefined">
     <span class="switch-field__copy">
       <label :for="id">{{ label }}</label>
-      <small v-if="description">{{ description }}</small>
+      <small v-if="description" :id="`${id}-description`">{{ description }}</small>
     </span>
-    <SwitchRoot :id="id" v-model="model" class="switch-field__control">
+    <SwitchRoot
+      :id="id"
+      v-model="model"
+      :aria-describedby="description ? `${id}-description` : undefined"
+      class="switch-field__control"
+      :disabled="disabled"
+    >
       <SwitchThumb class="switch-field__thumb" />
     </SwitchRoot>
   </div>
@@ -66,13 +73,24 @@ const id = useId()
   transition: background-color var(--motion-duration-micro) var(--motion-easing-hover);
 }
 
-.switch-field__control:hover:not([data-state='checked']) {
+.switch-field__control:hover:not(:disabled):not([data-state='checked']) {
   background: var(--control-track-bg-color-hover);
 }
 
 .switch-field__control[data-state='checked'] {
   border-color: var(--control-checked-bg-color-rest);
   background: var(--control-checked-bg-color-rest);
+}
+
+.switch-field[data-disabled] label {
+  color: var(--control-fg-color-disabled);
+  cursor: not-allowed;
+}
+
+.switch-field__control:disabled {
+  border-color: var(--control-bg-color-disabled);
+  background: var(--control-bg-color-disabled);
+  cursor: not-allowed;
 }
 
 .switch-field__thumb {
@@ -88,6 +106,10 @@ const id = useId()
 .switch-field__thumb[data-state='checked'] {
   background: var(--control-knob-bg-color-checked);
   transform: translateX(calc(var(--base-size-16) + var(--base-size-4)));
+}
+
+.switch-field__control:disabled .switch-field__thumb {
+  background: var(--control-fg-color-disabled);
 }
 
 @media (prefers-reduced-motion: reduce) {
