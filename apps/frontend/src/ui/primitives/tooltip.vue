@@ -19,7 +19,7 @@ withDefaults(
 
 <template>
   <TooltipProvider>
-    <TooltipRoot>
+    <TooltipRoot ignore-non-keyboard-focus>
       <TooltipTrigger as-child>
         <slot />
       </TooltipTrigger>
