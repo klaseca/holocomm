@@ -15,7 +15,7 @@ import {
 } from 'reka-ui'
 import { nextTick, useTemplateRef, watch } from 'vue'
 
-import { Avatar, IconButton, Tooltip } from '#/ui/primitives'
+import { Avatar, Icon, IconButton, Tooltip } from '#/ui/primitives'
 
 import type { SavedRoom } from '../application/local-user-state.ts'
 
@@ -116,11 +116,7 @@ function roomInitials(slug: string): string {
           <DropdownMenuRoot>
             <DropdownMenuTrigger as-child>
               <IconButton class="navigation-item__more" :label="`Options for ${room.slug}`">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke-width="0" />
-                  <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke-width="0" />
-                  <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke-width="0" />
-                </svg>
+                <Icon name="ellipsis" />
               </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuPortal :to="portalTarget">

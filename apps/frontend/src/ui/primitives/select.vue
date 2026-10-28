@@ -11,6 +11,8 @@ import {
 } from 'reka-ui'
 import { computed } from 'vue'
 
+import { Icon } from './icon.vue'
+
 export interface SelectOption {
   readonly value: string
   readonly label: string
@@ -31,9 +33,7 @@ const selectedOption = computed(() => props.options.find(option => option.value 
   <SelectRoot v-model="model">
     <SelectTrigger class="app-select__trigger" :aria-label="accessibleLabel">
       <span>{{ selectedOption?.label }}</span>
-      <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path d="m4 6 4 4 4-4" />
-      </svg>
+      <Icon name="chevron-down" />
     </SelectTrigger>
     <SelectPortal>
       <SelectContent
@@ -54,7 +54,9 @@ const selectedOption = computed(() => props.options.find(option => option.value 
                 <small v-if="option.description">{{ option.description }}</small>
               </span>
             </SelectItemText>
-            <SelectItemIndicator class="app-select__indicator">✓</SelectItemIndicator>
+            <SelectItemIndicator class="app-select__indicator">
+              <Icon name="check" />
+            </SelectItemIndicator>
           </SelectItem>
         </SelectViewport>
       </SelectContent>
@@ -87,12 +89,6 @@ const selectedOption = computed(() => props.options.find(option => option.value 
 }
 
 .app-select__trigger svg {
-  width: var(--base-size-16);
-  height: var(--base-size-16);
-  flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
   transition: transform var(--motion-duration-micro) var(--motion-easing-hover);
 }
 

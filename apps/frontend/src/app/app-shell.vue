@@ -10,7 +10,7 @@ import { roomSessionContext } from '#/modules/room/application/use-room-session.
 import { callControlsContext } from '#/modules/room/ui/call-controls-context.ts'
 import { MediaSettingsDialog } from '#/modules/rtc/ui/media-settings-dialog.vue'
 import { VoiceControls } from '#/modules/rtc/ui/voice-controls.vue'
-import { Button, IconButton } from '#/ui/primitives'
+import { Button, Icon, IconButton } from '#/ui/primitives'
 import { useMediaQuery } from '#/ui/use-media-query.ts'
 import { useResponsiveDialog } from '#/ui/use-responsive-dialog.ts'
 
@@ -200,9 +200,7 @@ const callEvents = {
     <header class="application-navigation-dialog__header">
       <h2 id="application-navigation-title">Menu</h2>
       <IconButton label="Close menu" @click="navigationOpen = false">
-        <svg viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M3 3l10 10M13 3 3 13" />
-        </svg>
+        <Icon name="x" />
       </IconButton>
     </header>
   </dialog>

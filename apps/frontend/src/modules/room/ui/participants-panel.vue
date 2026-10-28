@@ -8,7 +8,7 @@ import {
 } from 'reka-ui'
 import { useId } from 'vue'
 
-import { Avatar, ScrollArea, Slider, Switch } from '#/ui/primitives'
+import { Avatar, Icon, ScrollArea, Slider, Switch } from '#/ui/primitives'
 
 import type { ParticipantAudioSettings } from '../application/use-room-session.ts'
 
@@ -67,34 +67,24 @@ function setVolume(participantId: string, percent: number): void {
               <small v-if="participant.id === selfId">you</small>
             </span>
             <span class="participant__statuses">
-              <svg
+              <Icon
                 v-if="participant.screenSharing"
                 class="participant__status participant__status--sharing"
-                viewBox="0 0 16 16"
-                role="img"
-                aria-label="Sharing screen"
-              >
-                <rect x="1.5" y="2" width="13" height="9" rx="1.5" />
-                <path d="M5 14h6M8 11v3" />
-              </svg>
-              <svg
+                name="monitor"
+                label="Sharing screen"
+              />
+              <Icon
                 v-if="participant.microphoneMuted"
                 class="participant__status participant__status--muted"
-                viewBox="0 0 16 16"
-                role="img"
-                aria-label="Microphone muted"
-              >
-                <path d="M6 6v1a2 2 0 0 0 3.4 1.4M10 5V3a2 2 0 0 0-3.7-1M3 7a5 5 0 0 0 8.4 3.7M8 12v3M5 15h6M1.5 1.5l13 13" />
-              </svg>
-              <svg
+                name="mic-off"
+                label="Microphone muted"
+              />
+              <Icon
                 v-if="canConfigureAudio && audioSettings[participant.id]?.muted"
                 class="participant__status participant__status--local-muted"
-                viewBox="0 0 16 16"
-                role="img"
-                aria-label="Muted locally"
-              >
-                <path d="M2 6h3l3-3v10l-3-3H2zM10.5 6.2a3 3 0 0 1 0 3.6M12.5 4.2a6 6 0 0 1 0 7.6M1.5 1.5l13 13" />
-              </svg>
+                name="volume-x"
+                label="Muted locally"
+              />
             </span>
             <PopoverRoot v-if="canConfigureAudio && participant.id !== selfId">
               <PopoverTrigger as-child>
@@ -103,9 +93,7 @@ function setVolume(participantId: string, percent: number): void {
                   class="participant__settings-button"
                   :aria-label="`Audio settings for ${participant.displayName}`"
                 >
-                  <svg viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M2 5h8M13 5h1M2 11h2M7 11h7M10 3v4M4 9v4" />
-                  </svg>
+                  <Icon name="sliders-horizontal" />
                 </button>
               </PopoverTrigger>
               <PopoverPortal :to="portalTarget">
@@ -232,17 +220,6 @@ small {
   align-items: center;
   gap: var(--base-size-4);
   margin-left: auto;
-}
-
-.participant__status,
-.participant__settings-button svg {
-  width: var(--base-size-16);
-  height: var(--base-size-16);
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.5;
 }
 
 .participant__status--sharing {

@@ -12,6 +12,7 @@ import {
 import { useSlots } from 'vue'
 
 import { IconButton } from './icon-button.vue'
+import { Icon } from './icon.vue'
 
 withDefaults(
   defineProps<{
@@ -69,9 +70,7 @@ const slots = useSlots()
           </div>
           <DialogClose as-child>
             <IconButton label="Close dialog" size="sm">
-              <svg viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M3 3l10 10M13 3 3 13" />
-              </svg>
+              <Icon name="x" />
             </IconButton>
           </DialogClose>
         </header>

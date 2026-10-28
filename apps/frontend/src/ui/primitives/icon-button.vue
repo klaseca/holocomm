@@ -33,15 +33,4 @@ withDefaults(
   aspect-ratio: 1;
   padding: 0;
 }
-
-.icon-button :deep(svg) {
-  display: block;
-  width: var(--base-size-16);
-  height: var(--base-size-16);
-  flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-width: 2;
-}
 </style>

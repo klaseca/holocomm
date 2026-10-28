@@ -149,6 +149,17 @@ chat contents or display names. On `SIGINT` or `SIGTERM`, the backend stops acce
 HTTP requests, closes WebSocket clients with restart code `1012`, and waits up to
 `SHUTDOWN_TIMEOUT_MS` before terminating remaining connections.
 
+## Frontend icons
+
+Icons use [Lucide](https://lucide.dev/guide/static) SVG files. Add an icon name to
+`apps/frontend/src/ui/icons.ts`, then use `<Icon name="mic" />` from `#/ui/primitives`.
+Pass `label` when the icon conveys information on its own; icons inside labelled
+buttons are decorative by default.
+
+Vite builds only the listed icons into an external SVG sprite referenced through
+`<use>`. The sprite has a content hash in its filename; SVG paths and the Lucide
+library are not included in the application JavaScript.
+
 ## Quality checks
 
 ```sh

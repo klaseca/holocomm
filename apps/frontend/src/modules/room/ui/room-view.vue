@@ -7,7 +7,7 @@ import { NavigationTrigger } from '#/modules/identity/ui/navigation-trigger.vue'
 import { RemoteScreen } from '#/modules/rtc/ui/remote-screen.vue'
 import { useVoiceActivity } from '#/modules/rtc/ui/use-voice-activity.ts'
 import { VoiceControls } from '#/modules/rtc/ui/voice-controls.vue'
-import { Button, IconButton, Tooltip } from '#/ui/primitives'
+import { Button, Icon, IconButton, Tooltip } from '#/ui/primitives'
 import { useResponsiveDialog } from '#/ui/use-responsive-dialog.ts'
 
 import { useRoomPreview } from '../application/use-room-preview.ts'
@@ -228,26 +228,15 @@ watch(previewing, (enabled) => {
             :aria-expanded="participantsOpen"
             @click="openParticipants"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="9" cy="8" r="3" />
-              <path d="M3 20v-2a6 6 0 0 1 12 0v2H3Zm13-14a3 3 0 0 1 0 6m1 3a5 5 0 0 1 4 5h-4" />
-            </svg>
+            <Icon name="users" />
             <span aria-hidden="true">{{ visibleParticipants.length }}</span>
           </Button>
         </Tooltip>
         <Tooltip :text="copyLabel">
           <IconButton class="room__copy-button" :label="copyLabel" @click="copyInvite">
-            <svg v-if="copyLabel === 'Copied'" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m4 12 5 5L20 6" />
-            </svg>
-            <svg v-else-if="copyLabel === 'Copy failed'" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v6m0 4h.01" />
-            </svg>
-            <svg v-else viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="8" y="8" width="12" height="12" rx="2" />
-              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
-            </svg>
+            <Icon v-if="copyLabel === 'Copied'" name="check" />
+            <Icon v-else-if="copyLabel === 'Copy failed'" name="circle-alert" />
+            <Icon v-else name="copy" />
           </IconButton>
         </Tooltip>
         <span v-if="copyLabel !== 'Copy invite'" class="room__copy-announcement" role="status">
@@ -392,9 +381,7 @@ watch(previewing, (enabled) => {
       label="Close participants"
       @click="participantsOpen = false"
     >
-      <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M3 3l10 10M13 3 3 13" />
-      </svg>
+      <Icon name="x" />
     </IconButton>
   </dialog>
 </template>
@@ -476,16 +463,6 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.room__participants-button svg {
-  width: var(--base-size-16);
-  height: var(--base-size-16);
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
 }
 
 .room__copy-button {
